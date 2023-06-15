@@ -2,22 +2,22 @@
   "name": "instituto",
   "version": "1.0.0",
   "description": "PROJETO BACK-END INSTITUTO",
-  "main": "server.js",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "test",
-    "start": "node server.js"
+    "compile": "tsc",
+    "start": "ts-node src/index.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sophia-bergamo/Instituto.git"
-  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/sophia-bergamo/Instituto/issues"
-  },
-  "homepage": "https://github.com/sophia-bergamo/Instituto#readme",
   "dependencies": {
+    "@apollo/server": "^4.7.3",
     "graphql": "^16.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
   }
 }
