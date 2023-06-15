@@ -16,12 +16,12 @@ const typeDefs = `#graphql
 
 const books = [
     {
-      title: 'The Awakening',
-      author: 'Kate Chopin',
+      title: 'Harry Potter',
+      author: 'J. K. Rowling',
     },
     {
-      title: 'City of Glass',
-      author: 'Paul Auster',
+      title: 'O Código da Vinci',
+      author: 'Dan Brown',
     },
   ];
 
@@ -37,6 +37,8 @@ const books = [
   });
  
 
-   startStandaloneServer(server, {
+    startStandaloneServer(server, {
     listen: { port: 4000 },
   }).then(({ url }) => console.log(url))
+
+  console.log(`🚀  Server ready at: ${URL}`);
