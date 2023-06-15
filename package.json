@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "PROJETO BACK-END INSTITUTO",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "compile": "tsc",
     "start": "ts-node src/index.ts"
