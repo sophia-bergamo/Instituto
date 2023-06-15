@@ -1,0 +1,23 @@
+{
+  "name": "instituto",
+  "version": "1.0.0",
+  "description": "PROJETO BACK-END INSTITUTO",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sophia-bergamo/Instituto.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sophia-bergamo/Instituto/issues"
+  },
+  "homepage": "https://github.com/sophia-bergamo/Instituto#readme",
+  "dependencies": {
+    "graphql": "^16.6.0"
+  }
+}
