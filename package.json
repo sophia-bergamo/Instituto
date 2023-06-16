@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "instituto",
   "version": "1.0.0",
   "description": "PROJETO BACK-END INSTITUTO",
@@ -17,6 +18,15 @@
   "devDependencies": {
     "@types/node": "^20.3.1",
     "ts-node": "^10.9.1",
+=======
+  "dependencies": {
+    "pg": "^8.11.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.3.16"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+>>>>>>> 06c47c5 (connected-database)
     "typescript": "^5.1.3"
   }
 }
