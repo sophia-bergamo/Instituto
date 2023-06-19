@@ -1,7 +1,14 @@
-# Awesome Project Build with TypeORM
+# 🚀 Projeto Onboarding Backend
 
-Steps to run this project:
+- Desenvolvimento do bot Taki Tiler com foco em Backend
 
-1. Run `npm i` command
-2. Setup database settings inside `data-source.ts` file
-3. Run `npm start` command
+# 📋 Desenvolvendo
+
+- Processos com GitHub
+- Estrutura de arquivos
+- Banco de Dados
+- Linguagens de programação
+
+
+    
+  
