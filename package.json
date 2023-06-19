@@ -11,7 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+feature/apollo-typescript-setup
     "@apollo/server": "^4.7.4",
+
+    "express": "^4.18.2",
+    "express-graphql": "^0.12.0",
+ feature/setup-graphql
     "graphql": "^16.6.0"
   },
   "devDependencies": {
