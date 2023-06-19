@@ -1,5 +1,5 @@
 {
-   "name": "User",
+   "name": "user",
    "version": "0.0.1",
    "description": "Awesome project developed with TypeORM.",
    "type": "commonjs",

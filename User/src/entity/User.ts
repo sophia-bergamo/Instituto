@@ -4,9 +4,6 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number
-
-    @Column()
     firstName: string
 
     @Column()
@@ -14,6 +11,5 @@ export class User {
 
     @Column()
     age: number
-
 
 }
