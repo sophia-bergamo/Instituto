@@ -1,7 +1,6 @@
-
-node_modules
-
-dist
-
-.vscode
-db/dumps
+.idea/
+.vscode/
+node_modules/
+build/
+tmp/
+temp/
