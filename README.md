@@ -8,7 +8,3 @@
 - Estrutura de arquivos
 - Banco de Dados
 - Linguagens de programação
-
-
-    
-  
