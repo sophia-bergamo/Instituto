@@ -1,28 +1,33 @@
 import "reflect-metadata"
-import { AppDataSource } from "./data-source"
-import { User } from "./entity/User"
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 
-AppDataSource.initialize().then(async () => {
-
-    const user = new User()
-    user.firstName = "3"
-    user.lastName = ""
-    user.age = 20
-
-    await AppDataSource.manager.save(user)
-})
-
 const typeDefs = `#graphql
-    type Query {
+
+  type Query{
     hello: String
+  }
+
+  type Mutation{
+    CreateUser: User
 }
+   type User {
+    id: ID
+    name: String
+    email: String
+    password: String
+    birthDate: String
+  }
 `;
 
   const resolvers = {
-    Query: {
-      hello: () => "Hello World",
+    Mutation: {
+      CreateUser: () => ({
+      id: "1",
+      name: "instituto",
+      email: "instituto@gmail.com",
+      birthDate: "01-01-1990"
+      })
     },
   };
 
