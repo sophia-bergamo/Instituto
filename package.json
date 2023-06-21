@@ -5,8 +5,7 @@
    "main": "index.ts",
    "scripts": {
       "compile": "tsc",
-      "start": "npx ts-node src/index.ts",
-      "typeorm": "typeorm-ts-node-commonjs"
+      "start": "npx ts-node src/index.ts"
    },
    "keywords": [],
    "author": "",

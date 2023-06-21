@@ -4,55 +4,76 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { AppDataSource } from "./data-source"
 import { User } from './entity/User';
 
-AppDataSource.initialize().then(async () => {
-
-  const user = new User()
-  user.name = "instituto"
-  user.email = "instituto@gmail.com"
-  user.password = "12345"
-  user.birthDate = "01-01-1990"
-
-  await AppDataSource.manager.save(user)
-})
-
+//GraphQl Schema 
+//para colocar input (input NomeInput)
+//
 const typeDefs = `#graphql
 
   type Query{
     hello: String
   }
 
+  #input obrigatório !
   type Mutation{
-    CreateUser: User
+    CreateUser(input: CreateUserInput!): User
 }
+  
+  input CreateUserInput{
+    name: String!
+    email: String!
+    password: String!
+    birthDate: String!
+  }
+
    type User {
     id: ID
     name: String
     email: String
-    password: String
     birthDate: String
   }
 `;
+//interface para conectar args com os inputs
+//typescript como default é obrigatório, para ser "opcional" -> ?
+interface CreateUserInput{
+  input: {
+    name: string;
+    email: string;
+    password: string;
+    birthDate: string;
+  }
+}
 
   const resolvers = {
     Query: {
       hello: () => "Hello World",
    },
     Mutation: {
-      CreateUser: () => ({
-      id: "1",
-      name: "instituto",
-      email: "instituto@gmail.com",
-      birthDate: "01-01-1990"
-      })
+      CreateUser: async (parent: unknown, args: CreateUserInput) => {
+        const user = new User()
+          user.name = args.input.name
+          user.email = args.input.email
+          user.password = args.input.password    
+          user.birthDate = args.input.birthDate
+
+         return await AppDataSource.manager.save(user)
     },
-  };
+  }
+};
+
+//Para lidar com Promisses, definir a ordem usando o await
+async function initialize () {
+  await AppDataSource.initialize()
 
   const server = new ApolloServer({
-      typeDefs,
-      resolvers,
-  });
+    typeDefs,
+    resolvers,
+});
 
-  
-    startStandaloneServer(server, {
-    listen: { port: 4000 },
-  }).then(({ url }) => console.log(url))
+  const { url } =  await startStandaloneServer(server, {
+  listen: { port: 4000 },
+}); 
+
+ console.log( url)
+}
+
+initialize()
