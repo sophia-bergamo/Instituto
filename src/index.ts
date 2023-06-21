@@ -2,11 +2,11 @@ import "reflect-metadata"
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { AppDataSource } from "./data-source"
-import { User2 } from './user2';
+import { User } from './entity/User';
 
 AppDataSource.initialize().then(async () => {
 
-  const user = new User2()
+  const user = new User()
   user.name = "instituto"
   user.email = "instituto@gmail.com"
   user.password = "12345"
@@ -34,6 +34,9 @@ const typeDefs = `#graphql
 `;
 
   const resolvers = {
+    Query: {
+      hello: () => "Hello World",
+   },
     Mutation: {
       CreateUser: () => ({
       id: "1",
