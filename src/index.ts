@@ -3,10 +3,10 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
+import 'bcrypt';
 
 //GraphQl Schema
 //para colocar input (input NomeInput)
-//
 const typeDefs = `#graphql
 
   type Query{
@@ -29,6 +29,7 @@ const typeDefs = `#graphql
     id: ID
     name: String
     email: String
+    password: String
     birthDate: String
   }
 `;
@@ -49,13 +50,29 @@ const resolvers = {
   },
   Mutation: {
     CreateUser: async (parent: unknown, args: CreateUserInput) => {
+      //validação do email - busca o banco se já existe um email igual
+      const storageUsers = await AppDataSource.manager.find(User, { where: { email: args.input.email } });
+      console.log(storageUsers);
+      if (storageUsers.length > 0) {
+        throw new Error('Email já registrado');
+      }
+      //validação da senha
+      const validPassword = args.input.password;
+      if (validPassword.length < 6 || !/\d/.test(validPassword) || !/[a-zA-Z]/.test(validPassword)) {
+        throw new Error('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
+      }
+      //criação do hash da senha
+      const bcrypt = require('bcrypt');
+      const hashedPassword = bcrypt.hashSync(args.input.password, 10);
+
       const user = new User();
       user.name = args.input.name;
       user.email = args.input.email;
-      user.password = args.input.password;
+      user.password = hashedPassword; //armazena o hash invés da senha
       user.birthDate = args.input.birthDate;
 
-      return await AppDataSource.manager.save(user);
+      console.log(user);
+      return AppDataSource.manager.save(user);
     },
   },
 };
