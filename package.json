@@ -6,7 +6,8 @@
    "scripts": {
       "compile": "tsc",
       "start": "npx ts-node src/index.ts",
-      "test": "npm run test"
+      "dev": "tsnd --exit-child /src/index.ts",
+      "test": "mocha"
    },
    "keywords": [],
    "author": "",
