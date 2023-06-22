@@ -1,4 +1,7 @@
-PROJETO BACK-END INSTITUTO
+# Awesome Project Build with TypeORM
 
->Testar habilidades de back-end 
->Novo bot GitHub com novas Issues
+Steps to run this project:
+
+1. Run `npm i` command
+2. Setup database settings inside `data-source.ts` file
+3. Run `npm start` command
