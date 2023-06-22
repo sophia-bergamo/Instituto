@@ -49,14 +49,13 @@ const resolvers = {
     hello: () => 'Hello World',
   },
   Mutation: {
-    CreateUser: async (parent: unknown, args: CreateUserInput) => {
-      //validação do email - busca o banco se já existe um email igual
-      const storageUsers = await AppDataSource.manager.find(User, { where: { email: args.input.email } });
-      console.log(storageUsers);
-      if (storageUsers.length > 0) {
+    CreateUser: async (_: any, args: CreateUserInput) => {
+      //busca do email - busca no banco se já existe um email igual
+      const storageUsers = await AppDataSource.manager.findOne(User, { where: { email: args.input.email } });
+      if (storageUsers) {
         throw new Error('Email já registrado');
       }
-      //validação da senha
+      //validação da senha - 6 caracteres, com 1 letra e 1 digito
       const validPassword = args.input.password;
       if (validPassword.length < 6 || !/\d/.test(validPassword) || !/[a-zA-Z]/.test(validPassword)) {
         throw new Error('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
@@ -65,13 +64,19 @@ const resolvers = {
       const bcrypt = require('bcrypt');
       const hashedPassword = bcrypt.hashSync(args.input.password, 10);
 
+      //validação do email
+      const validateEmail = args.input.email;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(validateEmail)) {
+        throw new Error('Email inválido');
+      }
+
       const user = new User();
       user.name = args.input.name;
       user.email = args.input.email;
       user.password = hashedPassword; //armazena o hash invés da senha
       user.birthDate = args.input.birthDate;
 
-      console.log(user);
       return AppDataSource.manager.save(user);
     },
   },
