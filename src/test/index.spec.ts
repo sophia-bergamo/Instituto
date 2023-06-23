@@ -1,10 +1,43 @@
-import { equal } from 'assert';
-import index from './';
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import axios from 'axios';
+import assert from 'assert';
 
-var assert = require('assert');
+before(async () => {
+  const typeDefs = `
+      type Query {
+        hello: String
+      }
+    `;
 
-describe('Alguns testes de exemplo', function () {
-  it('2 + 2 deve ser igual a 4', function () {
-    assert.equal(4, 2 + 2);
+  const resolvers = {
+    Query: {
+      hello: () => 'Hello, world!',
+    },
+  };
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+  });
+
+  const url = await startStandaloneServer(server, {
+    listen: { port: 4000 },
+  });
+  console.log(url);
+});
+
+describe('Teste', () => {
+  it('Hello, world!', async () => {
+    const expectedResponse = { hello: 'Hello, world!' };
+    const response = await axios.post('http://localhost:4000/', {
+      query: `
+        {
+          hello
+        }
+      `,
+    });
+    const result = response.data.data;
+    assert.equal(result.hello, 'Hello, world!');
   });
 });
