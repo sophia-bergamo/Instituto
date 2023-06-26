@@ -1,7 +1,8 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import axios from 'axios';
-import assert from 'assert';
+import { expect } from 'chai';
+import chai = require('chai');
 
 before(async () => {
   const typeDefs = `
@@ -29,7 +30,6 @@ before(async () => {
 
 describe('Teste', () => {
   it('Hello, world!', async () => {
-    const expectedResponse = { hello: 'Hello, world!' };
     const response = await axios.post('http://localhost:4000/', {
       query: `
         {
@@ -38,6 +38,6 @@ describe('Teste', () => {
       `,
     });
     const result = response.data.data;
-    assert.equal(result.hello, 'Hello, world!');
+    expect(result.hello).to.be.eq('Hello, world!');
   });
 });
