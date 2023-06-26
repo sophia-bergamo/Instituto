@@ -3,7 +3,7 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
-import 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 //GraphQl Schema
 //para colocar input (input NomeInput)
@@ -15,7 +15,7 @@ const typeDefs = `#graphql
 
   #input obrigatório !
   type Mutation{
-    CreateUser(input: CreateUserInput!): User
+    createUser(input: CreateUserInput!): User
 }
   
   input CreateUserInput{
@@ -49,7 +49,7 @@ const resolvers = {
     hello: () => 'Hello World',
   },
   Mutation: {
-    CreateUser: async (_: any, args: CreateUserInput) => {
+    createUser: async (_: any, args: CreateUserInput) => {
       //busca do email - busca no banco se já existe um email igual
       const storageUsers = await AppDataSource.manager.findOne(User, { where: { email: args.input.email } });
       if (storageUsers) {
@@ -57,12 +57,15 @@ const resolvers = {
       }
       //validação da senha - 6 caracteres, com 1 letra e 1 digito
       const validPassword = args.input.password;
-      if (validPassword.length < 6 || !/\d/.test(validPassword) || !/[a-zA-Z]/.test(validPassword)) {
+      const onlyCharacters = /\d/;
+      const onlyNumbers = /[a-zA-Z]/;
+
+      if (validPassword.length < 6 || !onlyCharacters.test(validPassword) || !onlyNumbers.test(validPassword)) {
         throw new Error('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
       }
+
       //criação do hash da senha
-      const bcrypt = require('bcrypt');
-      const hashedPassword = bcrypt.hashSync(args.input.password, 10);
+      const hashedPassword = await bcrypt.hash(args.input.password, 10);
 
       //validação do email
       const validateEmail = args.input.email;
@@ -82,7 +85,7 @@ const resolvers = {
   },
 };
 
-//Para lidar com Promisses, definir a ordem usando o await
+//Para lidar com Promises, definir a ordem usando o await
 async function initialize() {
   await AppDataSource.initialize();
 

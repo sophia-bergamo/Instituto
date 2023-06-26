@@ -6,8 +6,8 @@ services:
     volumes:
       - ./db/dumps:/app-db-dumps
     environment:
-      - POSTGRES_USER=sophia  
-      - POSTGRES_PASSWORD=123456    
+      - POSTGRES_USER=sophia
+      - POSTGRES_PASSWORD=123456
       - POSTGRES_DB=test
 
   testdb:
