@@ -12,9 +12,5 @@
       "strict": true,
       "skipLibCheck": true,
       "esModuleInterop": true
-   },
-   "include": [
-      "**/*.ts",
-      "src/test/*.ts"
-    ]
+   }
 }
