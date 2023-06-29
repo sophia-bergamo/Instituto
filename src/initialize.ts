@@ -4,6 +4,8 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
 import * as bcrypt from 'bcrypt';
+import { unwrapResolverError } from '@apollo/server/errors';
+import { InputErrors } from './test/error';
 
 //GraphQl Schema
 //para colocar input (input NomeInput)
@@ -53,14 +55,14 @@ const resolvers = {
       //busca do email - busca no banco se já existe um email igual
       const storageUsers = await AppDataSource.manager.findOne(User, { where: { email: args.input.email } });
       if (storageUsers) {
-        throw new Error('Email já registrado');
+        throw new InputErrors('Email já registrado');
       }
       //validação da senha - 6 caracteres, com 1 letra e 1 digito
       const validPassword = args.input.password;
       const onlyCharacters = /\d/;
       const onlyNumbers = /[a-zA-Z]/;
       if (validPassword.length < 6 || !onlyCharacters.test(validPassword) || !onlyNumbers.test(validPassword)) {
-        throw new Error('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
+        throw new InputErrors('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
       }
       //criação do hash da senha
       const hashedPassword = await bcrypt.hash(args.input.password, 10);
@@ -69,7 +71,7 @@ const resolvers = {
       const validateEmail = args.input.email;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(validateEmail)) {
-        throw new Error('Email inválido');
+        throw new InputErrors('Email inválido');
       }
 
       const user = new User();
@@ -83,13 +85,18 @@ const resolvers = {
   },
 };
 
-//Para lidar com Promisses, definir a ordem usando o await
+//Para lidar com Promises, definir a ordem usando o await
 export async function initialize() {
   await AppDataSource.initialize();
 
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    formatError: (formattedError, error) => {
+      const unwrapError = unwrapResolverError(error) as any;
+
+      return { message: formattedError.message, code: unwrapError.code };
+    },
   });
 
   const { url } = await startStandaloneServer(server, {
