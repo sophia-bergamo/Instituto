@@ -3,7 +3,7 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
-import 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 //GraphQl Schema
 //para colocar input (input NomeInput)
@@ -63,8 +63,7 @@ const resolvers = {
         throw new Error('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
       }
       //criação do hash da senha
-      const bcrypt = require('bcrypt');
-      const hashedPassword = bcrypt.hash(args.input.password, 10);
+      const hashedPassword = await bcrypt.hash(args.input.password, 10);
 
       //validação do email
       const validateEmail = args.input.email;
