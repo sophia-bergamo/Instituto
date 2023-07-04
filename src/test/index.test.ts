@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { expect } from 'chai';
-import chai = require('chai');
 import { initialize } from '../initialize';
 import dotenv from 'dotenv';
 import { cleanAll } from './clear';
@@ -38,7 +37,6 @@ describe('Teste', () => {
           id
           name
           email
-          password
           birthDate
         } 
       }`,
@@ -47,8 +45,8 @@ describe('Teste', () => {
     //um data do axios e outro do Apollo
     const result = response.data.data;
 
-    expect(result.createUser).to.have.property('name', variables.input.name);
-    expect(result.createUser).to.have.property('email', variables.input.email);
-    expect(result.createUser).to.have.property('birthDate', variables.input.birthDate);
+    expect(result.createUser.name).to.be.eq(variables.input.name);
+    expect(result.createUser.email).to.be.eq(variables.input.email);
+    expect(result.createUser.birthDate).to.be.eq(variables.input.birthDate);
   });
 });

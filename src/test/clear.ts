@@ -5,6 +5,7 @@ import { AppDataSource } from '../data-source';
 // const nomeDafuncao = () => {}
 // const nomeDafuncao = async () => {}
 
+//https://github.com/nestjs/nest/issues/409
 export async function cleanAll() {
   //pega todas as entitys do datasource
   const entities = AppDataSource.entityMetadatas;
