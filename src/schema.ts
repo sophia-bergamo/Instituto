@@ -8,8 +8,8 @@ export const typeDefs = `#graphql
 
   #input obrigatório !
   type Mutation{
-    createUser(input: CreateUserInput!): User
-    login(input: LoginInput!): Login
+    createUser(input: CreateUserInput!): User!  
+    login(input: LoginInput!): Login!
 }
   
   input CreateUserInput{
@@ -25,10 +25,10 @@ export const typeDefs = `#graphql
   }
 
    type User {
-    id: ID
-    name: String
-    email: String
-    birthDate: String
+    id: ID!
+    name: String!
+    email: String!
+    birthDate: String!
   }
 
   input LoginInput {

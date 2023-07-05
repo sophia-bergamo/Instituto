@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
 import * as bcrypt from 'bcrypt';
-import { InputErrors } from './test/error';
+import { InputError, UnauthorizedError } from './test/error';
 import Jwt from 'jsonwebtoken';
 import { CreateUserInput, LoginInput } from './schema';
 
@@ -15,14 +15,14 @@ export const resolvers = {
       //busca do email - busca no banco se já existe um email igual
       const storageUsers = await AppDataSource.manager.findOne(User, { where: { email: args.input.email } });
       if (storageUsers) {
-        throw new InputErrors('Email já registrado');
+        throw new InputError('Email já registrado');
       }
       //validação da senha - 6 caracteres, com 1 letra e 1 digito
       const validPassword = args.input.password;
       const onlyCharacters = /\d/;
       const onlyNumbers = /[a-zA-Z]/;
       if (validPassword.length < 6 || !onlyCharacters.test(validPassword) || !onlyNumbers.test(validPassword)) {
-        throw new InputErrors('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
+        throw new InputError('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
       }
       //criação do hash da senha
       const hashedPassword = await bcrypt.hash(args.input.password, 10);
@@ -31,7 +31,7 @@ export const resolvers = {
       const validateEmail = args.input.email;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(validateEmail)) {
-        throw new InputErrors('Email inválido');
+        throw new InputError('Email inválido');
       }
 
       const user = new User();
@@ -46,16 +46,16 @@ export const resolvers = {
       //bate no banco e acha um usuário pelo email
       const user = await AppDataSource.manager.findOne(User, { where: { email: args.input.email } });
       if (!user) {
-        throw new InputErrors('Usuário não encontrado');
+        throw new UnauthorizedError('Credenciais inválidas');
       }
 
       //compara o hash do input e o hash do user que está no banco
       const passwordMatch = await bcrypt.compare(args.input.password, user.password);
       if (!passwordMatch) {
-        throw new InputErrors('Senha incorreta');
+        throw new UnauthorizedError('Credenciais inválidas');
       }
 
-      const token = Jwt.sign({ userId: user.id }, 'skljaksdj9983498327453lsldkjf', { expiresIn: '1h' });
+      const token = Jwt.sign({ userId: user.id }, process.env.JWT_TOKEN as string, { expiresIn: '1h' });
 
       //faz com que retorne no playground
       //retorna o usuário por completo pq está pegando direto do banco
