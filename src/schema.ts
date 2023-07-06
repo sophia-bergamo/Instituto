@@ -22,7 +22,6 @@ export const typeDefs = `#graphql
   type Login{
     token: String!
     user: User!
-    rememberMe: Boolean!
   }
 
    type User {
@@ -35,7 +34,7 @@ export const typeDefs = `#graphql
   input LoginInput {
       email: String!
       password: String!
-      rememberMe: Boolean!
+      rememberMe: Boolean
   }
 `;
 
@@ -54,6 +53,6 @@ export interface LoginInput {
   input: {
     email: string;
     password: string;
-    rememberMe: Boolean;
+    rememberMe: boolean;
   };
 }
