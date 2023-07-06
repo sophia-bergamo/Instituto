@@ -55,11 +55,16 @@ export const resolvers = {
         throw new UnauthorizedError('Credenciais inválidas');
       }
 
+      const rememberMe = args.input.rememberMe;
       const token = Jwt.sign({ userId: user.id }, process.env.JWT_TOKEN as string, { expiresIn: '1h' });
+      const refreshToken = Jwt.sign({ userId: user.id }, process.env.JWT_TOKEN as string, { expiresIn: '7d' });
+      if (rememberMe) {
+        return { user, token: refreshToken, refreshToken, rememberMe };
+      }
 
       //faz com que retorne no playground
       //retorna o usuário por completo pq está pegando direto do banco
-      return { user: user, token: token };
+      return { user, token, refreshToken, rememberMe };
     },
   },
 };

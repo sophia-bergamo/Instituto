@@ -19,7 +19,7 @@ export async function initialize() {
       return { message: formattedError.message, code: unwrapError.code };
     },
   });
-  const { url } = await startStandaloneServer(server as any, {
+  const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
   });
 
