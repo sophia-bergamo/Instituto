@@ -20,6 +20,9 @@ export async function initialize() {
     },
   });
   const { url } = await startStandaloneServer(server, {
+    context: async ({ req }) => ({
+      token: req.headers.authorization,
+    }),
     listen: { port: 4000 },
   });
 

@@ -5,13 +5,16 @@ import * as bcrypt from 'bcrypt';
 import { InputError, UnauthorizedError } from './test/error';
 import Jwt from 'jsonwebtoken';
 import { CreateUserInput, LoginInput } from './schema';
+import { verifyJWT } from './verify';
 
 export const resolvers = {
   Query: {
     hello: () => 'Hello World',
   },
   Mutation: {
-    createUser: async (_: any, args: CreateUserInput) => {
+    createUser: async (_: any, args: CreateUserInput, ctx: any) => {
+      verifyJWT(ctx.token);
+      console.log(ctx);
       //busca do email - busca no banco se já existe um email igual
       const storageUsers = await AppDataSource.manager.findOne(User, { where: { email: args.input.email } });
       if (storageUsers) {
@@ -54,7 +57,6 @@ export const resolvers = {
       if (!passwordMatch) {
         throw new UnauthorizedError('Credenciais inválidas');
       }
-
       const rememberMe = args.input.rememberMe;
       const token = Jwt.sign({ userId: user.id }, process.env.JWT_TOKEN as string, { expiresIn: '1h' });
       const refreshToken = Jwt.sign({ userId: user.id }, process.env.JWT_TOKEN as string, { expiresIn: '7d' });
