@@ -4,6 +4,11 @@ export const typeDefs = `#graphql
 
   type Query{
     hello: String
+    user(input: IDInput!): User
+  }
+
+  input IDInput{
+    userId: Int!
   }
 
   #input obrigatório !
@@ -54,5 +59,11 @@ export interface LoginInput {
     email: string;
     password: string;
     rememberMe: boolean;
+  };
+}
+
+export interface IDInput {
+  input: {
+    userId: number;
   };
 }
