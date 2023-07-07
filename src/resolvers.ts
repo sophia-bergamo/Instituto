@@ -60,11 +60,10 @@ export const resolvers = {
       //ternário = if else
       const expiresIn = rememberMe ? '7d' : '1d';
       const token = Jwt.sign({ userId: user.id }, process.env.JWT_TOKEN as string, { expiresIn: expiresIn });
-      const refreshToken = Jwt.sign({ userId: user.id }, process.env.JWT_TOKEN as string, { expiresIn: '7d' });
 
       //faz com que retorne no playground
       //retorna o usuário por completo pq está pegando direto do banco
-      return { user, token, rememberMe: refreshToken };
+      return { user, token };
     },
   },
 };
