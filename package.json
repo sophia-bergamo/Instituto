@@ -6,7 +6,8 @@
       "scripts": {
             "compile": "tsc",
             "start": "npx ts-node src/index.ts",
-            "test": "mocha"
+            "test": "mocha",
+            "seed": "ts-node src/seeds/seed.ts"
       },
       "keywords": [],
       "author": "",
