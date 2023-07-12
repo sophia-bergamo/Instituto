@@ -15,3 +15,11 @@ export class UnauthorizedError extends Error {
     super(message);
   }
 }
+
+export class NotFoundError extends Error {
+  code = 404;
+
+  constructor(message: string) {
+    super(message);
+  }
+}

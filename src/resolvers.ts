@@ -2,19 +2,19 @@ import 'reflect-metadata';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
 import * as bcrypt from 'bcrypt';
-import { InputError, UnauthorizedError } from './test/error';
+import { InputError, NotFoundError, UnauthorizedError } from './test/error';
 import Jwt from 'jsonwebtoken';
-import { CreateUserInput, IDInput, LoginInput } from './schema';
+import { CreateUserInput, UserInput, LoginInput } from './schema';
 import { verifyJWT } from './verify';
 
 export const resolvers = {
   Query: {
     hello: () => 'Hello World',
-    user: async (_treco: any, args: IDInput, ctx: any) => {
-      verifyJWT(ctx.token);
+    user: async (_: any, args: UserInput, ctx: any) => {
+      await verifyJWT(ctx.token);
       const user = await AppDataSource.manager.findOne(User, { where: { id: args.input.userId } });
       if (!user) {
-        throw new Error('Not found');
+        throw new NotFoundError('Id Not found');
       }
       return user;
     },

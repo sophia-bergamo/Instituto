@@ -4,10 +4,10 @@ export const typeDefs = `#graphql
 
   type Query{
     hello: String
-    user(input: IDInput!): User
+    user(input: UserInput!): User
   }
 
-  input IDInput{
+  input UserInput{
     userId: Int!
   }
 
@@ -62,7 +62,7 @@ export interface LoginInput {
   };
 }
 
-export interface IDInput {
+export interface UserInput {
   input: {
     userId: number;
   };
