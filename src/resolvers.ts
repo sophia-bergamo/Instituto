@@ -2,17 +2,25 @@ import 'reflect-metadata';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
 import * as bcrypt from 'bcrypt';
-import { InputError, UnauthorizedError } from './test/error';
+import { InputError, NotFoundError, UnauthorizedError } from './test/error';
 import Jwt from 'jsonwebtoken';
-import { CreateUserInput, LoginInput } from './schema';
+import { CreateUserInput, UserInput, LoginInput, ServerContext } from './schema';
 import { verifyJWT } from './verify';
 
 export const resolvers = {
   Query: {
     hello: () => 'Hello World',
+    user: async (_: any, args: UserInput, ctx: ServerContext) => {
+      await verifyJWT(ctx.token);
+      const user = await AppDataSource.manager.findOne(User, { where: { id: args.input.userId } });
+      if (!user) {
+        throw new NotFoundError('Id Not found');
+      }
+      return user;
+    },
   },
   Mutation: {
-    createUser: async (_: any, args: CreateUserInput, ctx: any) => {
+    createUser: async (_: any, args: CreateUserInput, ctx: ServerContext) => {
       verifyJWT(ctx.token);
       //busca do email - busca no banco se já existe um email igual
       const storageUsers = await AppDataSource.manager.findOne(User, { where: { email: args.input.email } });

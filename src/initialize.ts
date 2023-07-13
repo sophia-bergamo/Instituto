@@ -4,7 +4,7 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { AppDataSource } from './data-source';
 import { unwrapResolverError } from '@apollo/server/errors';
 import { resolvers } from './resolvers';
-import { typeDefs } from './schema';
+import { ServerContext, typeDefs } from './schema';
 
 //Para lidar com Promises, definir a ordem usando o await
 export async function initialize() {
@@ -19,7 +19,7 @@ export async function initialize() {
       return { message: formattedError.message, code: unwrapError.code };
     },
   });
-  const { url } = await startStandaloneServer(server, {
+  const { url } = await startStandaloneServer<ServerContext>(server, {
     context: async ({ req }) => ({
       token: req.headers.authorization,
     }),

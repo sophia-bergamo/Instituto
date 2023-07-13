@@ -1,6 +1,8 @@
 {
-    "extension": ["ts"],
-    "spec": "src/**/*.test.ts", 
-    "require": "ts-node/register",
-    "exit": true 
-  }
+  "extension": [
+    "ts"
+  ],
+  "spec": "src/**/*.test.ts",
+  "require": "ts-node/register",
+  "exit": true
+}

@@ -4,6 +4,11 @@ export const typeDefs = `#graphql
 
   type Query{
     hello: String
+    user(input: UserInput!): User
+  }
+
+  input UserInput{
+    userId: Int!
   }
 
   #input obrigatório !
@@ -25,7 +30,7 @@ export const typeDefs = `#graphql
   }
 
    type User {
-    id: ID!
+    id: Int!
     name: String!
     email: String!
     birthDate: String!
@@ -55,4 +60,14 @@ export interface LoginInput {
     password: string;
     rememberMe: boolean;
   };
+}
+
+export interface UserInput {
+  input: {
+    userId: number;
+  };
+}
+
+export interface ServerContext {
+  token?: string;
 }
