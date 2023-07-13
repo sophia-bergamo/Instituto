@@ -3,11 +3,8 @@ import { expect } from 'chai';
 import { initialize } from '../initialize';
 import dotenv from 'dotenv';
 import { cleanAll } from './clear';
-import { AppDataSource } from '../data-source';
-import { User } from '../entity/User';
-import { faker } from '@faker-js/faker';
-import bcrypt from 'bcrypt';
 import Jwt from 'jsonwebtoken';
+import { createUser } from './create-user';
 dotenv.config({ path: './test.env' });
 
 describe('Teste', () => {
@@ -19,21 +16,23 @@ describe('Teste', () => {
     await cleanAll();
   });
 
-  it.only('should return user successfully', async () => {
+  const query = `
+  query User($input: UserInput!) {
+    user(input: $input) {
+      id
+      name
+      email
+      birthDate
+    }
+  }`;
+
+  it('should return user successfully', async () => {
     //criar um user, pegar o id, criar o token pra esse id - arrange
     //mandar o id, e o token (pelas headers) - act
     //verficar se o id que ele mandou foi id que ta no banco e nao só o id e sim todos os campos - asserts
 
     //arrange
-    const hashedPassword = await bcrypt.hash('123456soso', 10);
-
-    const user = new User();
-    user.name = faker.person.firstName();
-    user.email = faker.internet.email();
-    user.password = hashedPassword; //armazena o hash invés da senha
-    user.birthDate = faker.date.birthdate().toDateString();
-
-    const userDb = await AppDataSource.manager.save(user);
+    const userDb = await createUser();
 
     const token = Jwt.sign({ userId: userDb.id }, process.env.JWT_TOKEN as string, { expiresIn: '7d' });
 
@@ -46,15 +45,7 @@ describe('Teste', () => {
     const response = await axios.post(
       'http://localhost:4000/',
       {
-        query: `
-      query User($input: UserInput!) {
-        user(input: $input) {
-          id
-          name
-          email
-          birthDate
-        }
-      }`,
+        query,
         variables,
       },
       {
@@ -66,22 +57,14 @@ describe('Teste', () => {
 
     //asserts
     const userData = response.data.data.user;
-    expect(userDb.id).to.be.eq(userDb.id);
+    expect(userData.id).to.be.eq(userDb.id);
     expect(userData.birthDate).to.be.eq(userDb.birthDate);
     expect(userData.email).to.be.eq(userDb.email);
     expect(userData.name).to.be.eq(userDb.name);
   });
 
   it('should throw error if user is not found', async () => {
-    const hashedPassword = await bcrypt.hash('123456soso', 10);
-
-    const user = new User();
-    user.name = faker.person.firstName();
-    user.email = faker.internet.email();
-    user.password = hashedPassword; //armazena o hash invés da senha
-    user.birthDate = faker.date.birthdate().toDateString();
-
-    const userDb = await AppDataSource.manager.save(user);
+    const userDb = await createUser();
 
     const token = Jwt.sign({ userId: userDb.id }, process.env.JWT_TOKEN as string, { expiresIn: '7d' });
 
@@ -94,15 +77,7 @@ describe('Teste', () => {
     const response = await axios.post(
       'http://localhost:4000/',
       {
-        query: `
-      query User($input: UserInput!) {
-        user(input: $input) {
-          id
-          name
-          email
-          birthDate
-        }
-      }`,
+        query,
         variables,
       },
       {
@@ -127,15 +102,7 @@ describe('Teste', () => {
     };
 
     const response = await axios.post('http://localhost:4000/', {
-      query: `
-      query User($input: UserInput!) {
-        user(input: $input) {
-          id
-          name
-          email
-          birthDate
-        }
-      }`,
+      query,
       variables,
     });
 
