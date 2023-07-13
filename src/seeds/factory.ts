@@ -3,22 +3,23 @@ import { AppDataSource } from '../data-source';
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcrypt';
 
-//cria os usuários fakes e salva no banco
+//salvando varios usuarios de uma vez utilizando um array vazio e populando ele
+//fazendo com que acesse o banco uma única vez
 export const createFakerUser = async (quantity: number) => {
-  const user = new User();
-  user.name = faker.person.firstName('female');
-  user.birthDate = faker.date.birthdate().toDateString();
-  user.email = faker.internet.email({ firstName: user.name });
-  user.password = faker.internet.password();
+  const saveUser: User[] = [];
 
-  if (quantity <= 0) {
-    return;
+  for (let i = 0; i < quantity; i++) {
+    const user = new User();
+    user.name = faker.person.firstName('female');
+    user.birthDate = faker.date.birthdate().toDateString();
+    user.email = faker.internet.email({ firstName: user.name });
+    user.password = faker.internet.password();
+
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    user.password = hashedPassword;
+
+    saveUser.push(user);
   }
 
-  await createFakerUser(quantity - 1);
-
-  const hashedPassword = await bcrypt.hash(user.password, 10);
-  user.password = hashedPassword;
-
-  await AppDataSource.manager.save(user);
+  await AppDataSource.manager.save(saveUser);
 };
