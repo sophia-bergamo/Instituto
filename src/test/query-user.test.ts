@@ -7,10 +7,10 @@ import Jwt from 'jsonwebtoken';
 import { createUser } from './create-user';
 dotenv.config({ path: './test.env' });
 
+before(async () => {
+  await initialize();
+});
 describe('Graphql - Query User', () => {
-  before(async () => {
-    await initialize();
-  });
   //antes de cada teste
   afterEach(async () => {
     await cleanAll();
