@@ -7,7 +7,7 @@ import Jwt from 'jsonwebtoken';
 import { createUser } from './create-user';
 dotenv.config({ path: './test.env' });
 
-describe('Teste', () => {
+describe('Graphql - Query User', () => {
   before(async () => {
     await initialize();
   });

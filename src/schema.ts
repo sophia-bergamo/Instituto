@@ -67,3 +67,7 @@ export interface UserInput {
     userId: number;
   };
 }
+
+export interface ServerContext {
+  token?: string;
+}
