@@ -6,12 +6,13 @@ import Jwt from 'jsonwebtoken';
 import { createUser } from './create-user';
 import { User } from '../entity/User';
 import { faker } from '@faker-js/faker';
-import bcrypt from 'bcrypt';
 import { AppDataSource } from '../data-source';
 
-describe.only('Graphql - Mutation CreateUser', () => {
+describe('Graphql - Mutation CreateUser', () => {
   let token: string;
   let userDb: User;
+  const validPassword = '1234qwer';
+  const validEmail = 'valid.email@gmail.com';
 
   beforeEach(async () => {
     userDb = await createUser();
@@ -37,9 +38,9 @@ describe.only('Graphql - Mutation CreateUser', () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
-        email: faker.internet.email(),
+        email: validEmail,
         name: faker.person.firstName(),
-        password: faker.internet.password(),
+        password: validPassword,
       },
     };
 
@@ -62,13 +63,34 @@ describe.only('Graphql - Mutation CreateUser', () => {
     expect(userDb.password).to.not.be.eq(variables.input.password);
   });
 
+  it('should throw error if user is not authenticated', async () => {
+    const variables = {
+      input: {
+        birthDate: faker.date.birthdate().toDateString(),
+        email: validEmail,
+        name: faker.person.firstName(),
+        password: validPassword,
+      },
+    };
+
+    const response = await axios.post('http://localhost:4000/', {
+      query,
+      variables,
+    });
+
+    const error = response.data.errors[0];
+    expect(error.message).to.be.eq(`Credenciais inválidas`);
+    expect(error.code).to.be.eq(401);
+    expect(response.data.data).to.be.eq(null);
+  });
+
   it('should throw error if email is already registered', async () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
         email: userDb.email,
         name: faker.internet.email(),
-        password: faker.internet.password(),
+        password: validPassword,
       },
     };
 
@@ -88,7 +110,7 @@ describe.only('Graphql - Mutation CreateUser', () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
-        email: faker.internet.email(),
+        email: validEmail,
         name: faker.person.firstName(),
         password: '123456',
       },
@@ -109,7 +131,7 @@ describe.only('Graphql - Mutation CreateUser', () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
-        email: faker.internet.email(),
+        email: validEmail,
         name: faker.person.firstName(),
         password: 'password',
       },
@@ -131,7 +153,7 @@ describe.only('Graphql - Mutation CreateUser', () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
-        email: faker.internet.email(),
+        email: validEmail,
         name: faker.person.firstName(),
         password: '123q',
       },
@@ -155,7 +177,7 @@ describe.only('Graphql - Mutation CreateUser', () => {
         birthDate: faker.date.birthdate().toDateString(),
         email: 'invalid.email',
         name: faker.person.firstName(),
-        password: faker.internet.password(),
+        password: validPassword,
       },
     };
 
