@@ -1,16 +1,10 @@
 import axios from 'axios';
 import { expect } from 'chai';
-import { initialize } from '../initialize';
-import dotenv from 'dotenv';
 import { cleanAll } from './clear';
 import Jwt from 'jsonwebtoken';
 import { createUser } from './create-user';
-dotenv.config({ path: './test.env' });
 
 describe('Graphql - Query User', () => {
-  before(async () => {
-    await initialize();
-  });
   //antes de cada teste
   afterEach(async () => {
     await cleanAll();

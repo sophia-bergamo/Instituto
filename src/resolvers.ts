@@ -21,7 +21,7 @@ export const resolvers = {
   },
   Mutation: {
     createUser: async (_: any, args: CreateUserInput, ctx: ServerContext) => {
-      verifyJWT(ctx.token);
+      await verifyJWT(ctx.token);
       //busca do email - busca no banco se já existe um email igual
       const storageUsers = await AppDataSource.manager.findOne(User, { where: { email: args.input.email } });
       if (storageUsers) {
