@@ -7,6 +7,7 @@ import { createUser } from './create-user';
 import { User } from '../entity/User';
 import { faker } from '@faker-js/faker';
 import { AppDataSource } from '../data-source';
+import { createJwtToken } from './createJwtToken';
 
 describe('Graphql - Mutation CreateUser', () => {
   let token: string;
@@ -16,7 +17,7 @@ describe('Graphql - Mutation CreateUser', () => {
 
   beforeEach(async () => {
     userDb = await createUser();
-    token = Jwt.sign({ userId: userDb.id }, process.env.JWT_TOKEN as string, { expiresIn: '7d' });
+    token = createJwtToken({ userId: userDb.id, extendedExpiration: true });
   });
 
   //depois de cada teste

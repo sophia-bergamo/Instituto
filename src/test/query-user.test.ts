@@ -3,11 +3,20 @@ import { expect } from 'chai';
 import { cleanAll } from './clear';
 import Jwt from 'jsonwebtoken';
 import { createUser } from './create-user';
+import { createJwtToken } from './createJwtToken';
+import { User } from '../entity/User';
 
-describe('Graphql - Query User', () => {
-  //antes de cada teste
+describe.only('Graphql - Query User', () => {
+  let userDb: User;
+  let token: string;
+
   afterEach(async () => {
     await cleanAll();
+  });
+
+  beforeEach(async () => {
+    userDb = await createUser();
+    token = createJwtToken({ userId: userDb.id, extendedExpiration: true });
   });
 
   const query = `
@@ -21,16 +30,6 @@ describe('Graphql - Query User', () => {
   }`;
 
   it('should return user successfully', async () => {
-    //criar um user, pegar o id, criar o token pra esse id - arrange
-    //mandar o id, e o token (pelas headers) - act
-    //verficar se o id que ele mandou foi id que ta no banco e nao só o id e sim todos os campos - asserts
-
-    //arrange
-    const userDb = await createUser();
-
-    const token = Jwt.sign({ userId: userDb.id }, process.env.JWT_TOKEN as string, { expiresIn: '7d' });
-
-    //act
     const variables = {
       input: {
         userId: userDb.id,
@@ -49,7 +48,6 @@ describe('Graphql - Query User', () => {
       },
     );
 
-    //asserts
     const userData = response.data.data.user;
     expect(userData.id).to.be.eq(userDb.id);
     expect(userData.birthDate).to.be.eq(userDb.birthDate);
@@ -58,11 +56,6 @@ describe('Graphql - Query User', () => {
   });
 
   it('should throw error if user is not found', async () => {
-    const userDb = await createUser();
-
-    const token = Jwt.sign({ userId: userDb.id }, process.env.JWT_TOKEN as string, { expiresIn: '7d' });
-
-    //igual ao playground
     const variables = {
       input: {
         userId: 299,
