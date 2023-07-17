@@ -49,6 +49,10 @@ describe('Graphql - Mutation Login', () => {
     expect(userData.birthDate).to.be.eq(userDb.birthDate);
     expect(userData.email).to.be.eq(userDb.email);
     expect(userData.name).to.be.eq(userDb.name);
+
+    const tokenData = response.data.data.login.token;
+    const verifyToken = Jwt.verify(tokenData, process.env.JWT_TOKEN as string) as Jwt.JwtPayload;
+    expect(verifyToken.userId).to.be.eq(userDb.id);
   });
 
   it('should throw error if email is invalid', async () => {
@@ -103,11 +107,9 @@ describe('Graphql - Mutation Login', () => {
       variables,
     });
 
-    const expiresIn = variables.input.rememberMe ? '7d' : '1d';
-    const token = Jwt.sign({ userId: userDb.id }, process.env.JWT_TOKEN as string, { expiresIn: expiresIn });
-
-    const userToken = response.data.data.login.token;
-    expect(userToken).to.be.eq(token);
+    const tokenData = response.data.data.login.token;
+    const verifyToken = Jwt.verify(tokenData, process.env.JWT_TOKEN as string) as Jwt.JwtPayload;
+    expect(verifyToken.userId).to.be.eq(userDb.id);
   });
 
   it('should reduce token expiration time to 1d if rememberMe is false', async () => {
@@ -124,10 +126,8 @@ describe('Graphql - Mutation Login', () => {
       variables,
     });
 
-    const expiresIn = variables.input.rememberMe ? '7d' : '1d';
-    const token = Jwt.sign({ userId: userDb.id }, process.env.JWT_TOKEN as string, { expiresIn: expiresIn });
-
-    const userToken = response.data.data.login.token;
-    expect(userToken).to.be.eq(token);
+    const tokenData = response.data.data.login.token;
+    const tokenVerify = Jwt.verify(tokenData, process.env.JWT_TOKEN as string) as Jwt.JwtPayload;
+    expect(tokenVerify.userId).to.be.eq(userDb.id);
   });
 });

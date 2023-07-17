@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker';
 import { AppDataSource } from '../data-source';
 
 export async function createUser(password?: string) {
-  const hashedPassword = password ? await bcrypt.hash(password, 10) : await bcrypt.hash(faker.internet.password(), 10);
+  const hashedPassword = await bcrypt.hash(password ?? faker.internet.password(), 10);
 
   const user = new User();
   user.name = faker.person.firstName();
