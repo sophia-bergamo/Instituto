@@ -6,7 +6,7 @@ export function createJwtToken(options: {payload: TokenData; extendedExpiration?
 
   const expiresIn = extendedExpiration ? "7d" : "1d";
 
-  const token = Jwt.sign({payload}, process.env.JWT_TOKEN as string, {expiresIn});
+  const token = Jwt.sign(payload, process.env.JWT_TOKEN as string, {expiresIn});
 
   return token;
 }

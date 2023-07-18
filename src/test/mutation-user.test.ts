@@ -17,7 +17,7 @@ describe("Graphql - Mutation CreateUser", () => {
 
   beforeEach(async () => {
     userDb = await createUser();
-    token = createJwtToken({payload: <TokenData>(<unknown>userDb.id), extendedExpiration: true});
+    token = createJwtToken({payload: {userId: userDb.id}, extendedExpiration: true});
   });
 
   //depois de cada teste
@@ -45,7 +45,14 @@ describe("Graphql - Mutation CreateUser", () => {
       },
     };
 
-    const response = await axios.post("http://localhost:4000/", {query, variables}, {headers: {Authorization: token}});
+    const response = await axios.post(
+      "http://localhost:4000/",
+      {
+        query,
+        variables,
+      },
+      {headers: {Authorization: token}},
+    );
 
     const result = response.data.data;
     const userDb = await AppDataSource.manager.findOneOrFail(User, {where: {id: result.createUser.id}});

@@ -17,7 +17,7 @@ describe("Graphql - Query User", () => {
 
   beforeEach(async () => {
     userDb = await createUser();
-    token = createJwtToken({payload: <TokenData>(<unknown>userDb.id), extendedExpiration: true});
+    token = createJwtToken({payload: {userId: userDb.id}, extendedExpiration: true});
   });
 
   const query = `
