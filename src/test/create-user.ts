@@ -3,8 +3,8 @@ import { User } from '../entity/User';
 import { faker } from '@faker-js/faker';
 import { AppDataSource } from '../data-source';
 
-export async function createUser() {
-  const hashedPassword = await bcrypt.hash('123456soso', 10);
+export async function createUser(password?: string) {
+  const hashedPassword = await bcrypt.hash(password ?? faker.internet.password(), 10);
 
   const user = new User();
   user.name = faker.person.firstName();

@@ -1,5 +1,4 @@
-//classe que estende o Error que os inputs recebem
-
+//erros de inputs (email já registrado, senha inválida, etc)
 export class InputError extends Error {
   code = 400;
 
@@ -8,6 +7,7 @@ export class InputError extends Error {
   }
 }
 
+//credenciais corretas mas sem permissão
 export class UnauthorizedError extends Error {
   code = 401;
 
@@ -16,6 +16,7 @@ export class UnauthorizedError extends Error {
   }
 }
 
+//credenciais não estam no banco de dados
 export class NotFoundError extends Error {
   code = 404;
 
