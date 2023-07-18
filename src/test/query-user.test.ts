@@ -1,12 +1,13 @@
-import axios from 'axios';
-import { expect } from 'chai';
-import { cleanAll } from './clear';
-import Jwt from 'jsonwebtoken';
-import { createUser } from './create-user';
-import { createJwtToken } from './createJwtToken';
-import { User } from '../entity/User';
+import axios from "axios";
+import {expect} from "chai";
+import {cleanAll} from "./clear";
+import Jwt from "jsonwebtoken";
+import {createUser} from "./create-user";
+import {createJwtToken} from "./createJwtToken";
+import {User} from "../entity/User";
+import {TokenData} from "../schema";
 
-describe.only('Graphql - Query User', () => {
+describe("Graphql - Query User", () => {
   let userDb: User;
   let token: string;
 
@@ -16,7 +17,7 @@ describe.only('Graphql - Query User', () => {
 
   beforeEach(async () => {
     userDb = await createUser();
-    token = createJwtToken({ userId: userDb.id, extendedExpiration: true });
+    token = createJwtToken({payload: <TokenData>(<unknown>userDb.id), extendedExpiration: true});
   });
 
   const query = `
@@ -29,14 +30,14 @@ describe.only('Graphql - Query User', () => {
     }
   }`;
 
-  it('should return user successfully', async () => {
+  it("should return user successfully", async () => {
     const variables = {
       input: {
         userId: userDb.id,
       },
     };
     const response = await axios.post(
-      'http://localhost:4000/',
+      "http://localhost:4000/",
       {
         query,
         variables,
@@ -55,14 +56,14 @@ describe.only('Graphql - Query User', () => {
     expect(userData.name).to.be.eq(userDb.name);
   });
 
-  it('should throw error if user is not found', async () => {
+  it("should throw error if user is not found", async () => {
     const variables = {
       input: {
         userId: 299,
       },
     };
     const response = await axios.post(
-      'http://localhost:4000/',
+      "http://localhost:4000/",
       {
         query,
         variables,
@@ -76,19 +77,19 @@ describe.only('Graphql - Query User', () => {
 
     expect(response.data.errors).to.have.lengthOf(1);
     const error = response.data.errors[0];
-    expect(error.message).to.be.eq('Id Not found');
+    expect(error.message).to.be.eq("Id Not found");
     expect(error.code).to.be.eq(404);
     expect(response.data.data.user).to.be.eq(null);
   });
 
-  it('should throw error if user is not authenticated', async () => {
+  it("should throw error if user is not authenticated", async () => {
     const variables = {
       input: {
         userId: 299,
       },
     };
 
-    const response = await axios.post('http://localhost:4000/', {
+    const response = await axios.post("http://localhost:4000/", {
       query,
       variables,
     });

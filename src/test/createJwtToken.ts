@@ -1,11 +1,12 @@
-import Jwt from 'jsonwebtoken';
+import Jwt from "jsonwebtoken";
+import {TokenData} from "../schema";
 
-export function createJwtToken(payload: { userId: number; extendedExpiration?: boolean }): string {
-  const { userId, extendedExpiration } = payload;
+export function createJwtToken(options: {payload: TokenData; extendedExpiration?: boolean}): string {
+  const {payload, extendedExpiration} = options;
 
-  const expiresIn = extendedExpiration ? '7d' : '1d';
+  const expiresIn = extendedExpiration ? "7d" : "1d";
 
-  const token = Jwt.sign({ userId }, process.env.JWT_TOKEN as string, { expiresIn });
+  const token = Jwt.sign({payload}, process.env.JWT_TOKEN as string, {expiresIn});
 
   return token;
 }
