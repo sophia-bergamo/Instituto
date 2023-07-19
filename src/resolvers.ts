@@ -21,15 +21,25 @@ export const resolvers = {
     users: async (_: any, args: UsersInput, ctx: ServerContext) => {
       await verifyJWT(ctx.token);
       const defaultNumber = 10;
+      const defautSkip = 0;
 
-      const user = AppDataSource.manager.find(User, {
+      const users = await AppDataSource.manager.find(User, {
         order: { name: 'ASC' },
-        take: args.input.maxUsers || defaultNumber,
+        take: args.input.limit ?? defaultNumber,
+        skip: args.input.skip ?? defautSkip,
       });
       //order - define a ordem da lista => ascendente ou decrescente
       //take - limita o número de usuários retornados ou se for null, retorna 10 como default
+      //skip - pular x números da lista
 
-      return user;
+      const count = await AppDataSource.manager.count(User);
+      //número total de usuários que tem no banco
+
+      const before = args.input.skip > 0;
+      const after = args.input.skip + args.input.limit < count;
+      //lógica para saber se exitem usuários antes ou depois do que estão retornados
+
+      return { users, count, before, after };
     },
   },
 
