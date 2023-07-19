@@ -4,7 +4,7 @@ import { User } from './entity/User';
 import * as bcrypt from 'bcrypt';
 import { InputError, NotFoundError, UnauthorizedError } from './test/error';
 import Jwt from 'jsonwebtoken';
-import { CreateUserInput, UserInput, LoginInput, ServerContext } from './schema';
+import { CreateUserInput, UserInput, LoginInput, ServerContext, UsersInput } from './schema';
 import { verifyJWT } from './verify';
 
 export const resolvers = {
@@ -18,7 +18,21 @@ export const resolvers = {
       }
       return user;
     },
+    users: async (_: any, args: UsersInput, ctx: ServerContext) => {
+      await verifyJWT(ctx.token);
+      const defaultNumber = 10;
+
+      const user = AppDataSource.manager.find(User, {
+        order: { name: 'ASC' },
+        take: args.input.maxUsers || defaultNumber,
+      });
+      //order - define a ordem da lista => ascendente ou decrescente
+      //take - limita o número de usuários retornados ou se for null, retorna 10 como default
+
+      return user;
+    },
   },
+
   Mutation: {
     createUser: async (_: any, args: CreateUserInput, ctx: ServerContext) => {
       await verifyJWT(ctx.token);

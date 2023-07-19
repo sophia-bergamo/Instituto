@@ -5,8 +5,13 @@ export const typeDefs = `#graphql
   type Query{
     hello: String
     user(input: UserInput!): User
+    users(input: UsersInput): [User!]!
   }
 
+  input UsersInput{
+    maxUsers: Int
+  }
+  
   input UserInput{
     userId: Int!
   }
@@ -74,4 +79,10 @@ export interface ServerContext {
 
 export interface TokenData {
   userId: number;
+}
+
+export interface UsersInput {
+  input: {
+    maxUsers: number;
+  };
 }
