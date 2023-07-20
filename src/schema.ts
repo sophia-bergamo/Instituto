@@ -11,13 +11,13 @@ export const typeDefs = `#graphql
   type PaginatedUsers {
     users: [User!]!
     count: Int!
-    before: Boolean!
-    after: Boolean!
+    hasBefore: Boolean!
+    hasAfter: Boolean!
   }
 
   input UsersInput{
-    limit: Int
-    skip: Int
+    limit: Int!
+    skip: Int!
   }
   
   input UserInput{
