@@ -5,11 +5,19 @@ export const typeDefs = `#graphql
   type Query{
     hello: String
     user(input: UserInput!): User
-    users(input: UsersInput): [User!]!
+    users(input: UsersInput): PaginatedUsers!
+  }
+
+  type PaginatedUsers {
+    users: [User!]!
+    count: Int!
+    hasBefore: Boolean!
+    hasAfter: Boolean!
   }
 
   input UsersInput{
-    maxUsers: Int
+    limit: Int!
+    skip: Int!
   }
   
   input UserInput{
@@ -83,6 +91,7 @@ export interface TokenData {
 
 export interface UsersInput {
   input: {
-    maxUsers: number;
+    limit: number;
+    skip: number;
   };
 }
