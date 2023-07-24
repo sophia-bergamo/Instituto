@@ -16,7 +16,7 @@ export const typeDefs = `#graphql
   }
 
   input UsersInput{
-    limit: Int!
+    limit: Int
     skip: Int!
   }
   

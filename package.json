@@ -6,7 +6,7 @@
       "scripts": {
             "compile": "tsc",
             "start": "npx ts-node src/index.ts",
-            "test": "mocha",
+            "test": "mocha --timeout 10000",
             "seed": "ts-node src/seeds/seed.ts"
       },
       "keywords": [],

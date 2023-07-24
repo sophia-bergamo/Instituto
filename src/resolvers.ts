@@ -31,6 +31,10 @@ export const resolvers = {
         throw new InputError('Limit não pode ser negativo');
       }
 
+      if (args.input.limit === 0) {
+        throw new InputError('Limit não pode ser zero');
+      }
+
       const [users, count] = await AppDataSource.manager.findAndCount(User, {
         order: { name: 'ASC' },
         take: args.input.limit ?? defaultLimit,

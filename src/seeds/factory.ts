@@ -21,5 +21,5 @@ export const createFakerUser = async (quantity: number) => {
     saveUser.push(user);
   }
 
-  await AppDataSource.manager.save(saveUser);
+  return await AppDataSource.manager.save(saveUser);
 };

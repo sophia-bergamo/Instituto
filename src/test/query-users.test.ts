@@ -1,14 +1,16 @@
 import axios from 'axios';
 import { expect } from 'chai';
 import { cleanAll } from './clear';
-import { createUser } from './create-user';
 import { createJwtToken } from './createJwtToken';
 import { User } from '../entity/User';
 import { AppDataSource } from '../data-source';
+import { createFakerUser } from '../seeds/factory';
 
-describe('Graphql - Query Users ', () => {
-  let userDb: User;
+describe('Graphql - Query Users ', async () => {
+  let userDb: User[];
   let token: string;
+  let user: User[];
+  let count: number;
   const validSkip = 0;
   const validLimit = 10;
 
@@ -17,8 +19,9 @@ describe('Graphql - Query Users ', () => {
   });
 
   beforeEach(async () => {
-    userDb = await createUser();
-    token = createJwtToken({ payload: { userId: userDb.id }, extendedExpiration: true });
+    userDb = await createFakerUser(50);
+    token = createJwtToken({ payload: { userId: userDb[0].id } });
+    [user, count] = await AppDataSource.manager.findAndCount(User, { order: { name: 'ASC' } });
   });
 
   const query = `
@@ -46,31 +49,163 @@ describe('Graphql - Query Users ', () => {
 
     const response = await axios.post(
       'http://localhost:4000/',
-      {
-        query,
-        variables,
-      },
-      {
-        headers: {
-          Authorization: token,
-        },
-      },
+      { query, variables },
+      { headers: { Authorization: token } },
     );
 
-    const userData = response.data.data.users.users[0];
-    expect(userData.id).to.be.eq(userDb.id);
-    expect(userData.birthDate).to.be.eq(userDb.birthDate);
-    expect(userData.email).to.be.eq(userDb.email);
-    expect(userData.name).to.be.eq(userDb.name);
+    const userData = response.data.data.users;
 
-    const hasBefore = response.data.data.users.hasBefore;
-    expect(hasBefore).to.be.eq(false);
-    const hasAfter = response.data.data.users.hasAfter;
-    expect(hasAfter).to.be.eq(false);
+    expect(userData.count).to.be.eq(count);
+    expect(userData.hasAfter).to.be.true;
+    expect(userData.hasBefore).to.be.false;
 
-    const count = response.data.data.users.count;
-    const countDb = await AppDataSource.manager.count(User);
-    expect(count).to.be.eq(countDb);
+    expect(userData.users[0].id).to.be.eq(user[0].id);
+    expect(userData.users[0].name).to.be.eq(user[0].name);
+    expect(userData.users[0].email).to.be.eq(user[0].email);
+    expect(userData.users[0].birthDate).to.be.eq(user[0].birthDate);
+  });
+
+  it('should return all users if limit is equal to the number of users in database', async () => {
+    const variables = {
+      input: {
+        skip: validSkip,
+        limit: count,
+      },
+    };
+
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
+
+    const userData = response.data.data.users;
+
+    expect(userData.count).to.be.eq(count);
+    expect(userData.hasBefore).to.be.false;
+    expect(userData.hasAfter).to.be.false;
+
+    expect(userData.users[0].id).to.be.eq(user[0].id);
+    expect(userData.users[0].name).to.be.eq(user[0].name);
+    expect(userData.users[0].email).to.be.eq(user[0].email);
+    expect(userData.users[0].birthDate).to.be.eq(user[0].birthDate);
+  });
+
+  it('should return [] if skip is equal to the number of users in database', async () => {
+    const variables = {
+      input: {
+        skip: count,
+        limit: validLimit,
+      },
+    };
+
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
+
+    const userData = response.data.data.users;
+
+    expect(userData.count).to.be.eq(count);
+    expect(userData.hasBefore).to.be.true;
+    expect(userData.users).to.be.deep.eq([]);
+    expect(userData.hasAfter).to.be.false;
+  });
+
+  it('should return the default values if skip and limit are null', async () => {
+    const variables = {
+      input: {
+        skip: 0,
+        limit: null,
+      },
+    };
+
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
+
+    const userData = response.data.data.users;
+
+    expect(userData.count).to.be.eq(count);
+    expect(userData.hasBefore).to.be.false;
+    expect(userData.hasAfter).to.be.true;
+
+    expect(userData.users[0].id).to.be.eq(user[0].id);
+    expect(userData.users[0].name).to.be.eq(user[0].name);
+    expect(userData.users[0].email).to.be.eq(user[0].email);
+    expect(userData.users[0].birthDate).to.be.eq(user[0].birthDate);
+  });
+
+  it('should return all users if limit is greater than the total number of users', async () => {
+    const variables = {
+      input: {
+        skip: 0,
+        limit: count + 5,
+      },
+    };
+
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
+
+    const userData = response.data.data.users;
+
+    expect(userData.count).to.be.eq(count);
+    expect(userData.hasBefore).to.be.false;
+    expect(userData.hasAfter).to.be.false;
+
+    expect(userData.users[0].id).to.be.eq(user[0].id);
+    expect(userData.users[0].name).to.be.eq(user[0].name);
+    expect(userData.users[0].email).to.be.eq(user[0].email);
+    expect(userData.users[0].birthDate).to.be.eq(user[0].birthDate);
+  });
+
+  it('should return [] if skip is greater than the total number of users', async () => {
+    const variables = {
+      input: {
+        skip: count + 5,
+        limit: validLimit,
+      },
+    };
+
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
+
+    const userData = response.data.data.users;
+
+    expect(userData.count).to.be.eq(count);
+    expect(userData.hasBefore).to.be.true;
+    expect(userData.hasAfter).to.be.false;
+    expect(userData.users).to.be.deep.eq([]);
+  });
+
+  it('should throw error if limit is 0', async () => {
+    const variables = {
+      input: {
+        skip: validSkip,
+        limit: 0,
+      },
+    };
+
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
+
+    expect(response.data.errors).to.have.lengthOf(1);
+    const error = response.data.errors[0];
+    expect(error.message).to.be.eq('Limit não pode ser zero');
+    expect(error.code).to.be.eq(400);
+    expect(response.data.data).to.be.eq(null);
   });
 
   it('should throw error if user is not authenticated', async () => {
@@ -102,15 +237,8 @@ describe('Graphql - Query Users ', () => {
 
     const response = await axios.post(
       'http://localhost:4000/',
-      {
-        query,
-        variables,
-      },
-      {
-        headers: {
-          Authorization: token,
-        },
-      },
+      { query, variables },
+      { headers: { Authorization: token } },
     );
 
     expect(response.data.errors).to.have.lengthOf(1);
@@ -129,15 +257,8 @@ describe('Graphql - Query Users ', () => {
 
     const response = await axios.post(
       'http://localhost:4000/',
-      {
-        query,
-        variables,
-      },
-      {
-        headers: {
-          Authorization: token,
-        },
-      },
+      { query, variables },
+      { headers: { Authorization: token } },
     );
 
     expect(response.data.errors).to.have.lengthOf(1);
