@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 
 //salvando varios usuarios de uma vez utilizando um array vazio e populando ele
 //fazendo com que acesse o banco uma única vez
-export const createFakerUser = async (quantity: number) => {
+export const createFakerUsers = async (quantity: number) => {
   const saveUser: User[] = [];
 
   for (let i = 0; i < quantity; i++) {
@@ -21,5 +21,5 @@ export const createFakerUser = async (quantity: number) => {
     saveUser.push(user);
   }
 
-  return await AppDataSource.manager.save(saveUser);
+  return AppDataSource.manager.save(saveUser);
 };

@@ -10,14 +10,14 @@ export const typeDefs = `#graphql
 
   type PaginatedUsers {
     users: [User!]!
-    count: Int!
+    totalOfUsers: Int!
     hasBefore: Boolean!
     hasAfter: Boolean!
   }
 
   input UsersInput{
     limit: Int
-    skip: Int!
+    skip: Int
   }
   
   input UserInput{
@@ -94,4 +94,18 @@ export interface UsersInput {
     limit: number;
     skip: number;
   };
+}
+
+export interface PaginatedUsers {
+  users: UserModel[];
+  totalOfUsers: number;
+  hasBefore: boolean;
+  hasAfter: boolean;
+}
+
+export interface UserModel {
+  id: number;
+  name: string;
+  email: string;
+  birthDate: string;
 }

@@ -35,7 +35,7 @@ export const resolvers = {
         throw new InputError('Limit não pode ser zero');
       }
 
-      const [users, count] = await AppDataSource.manager.findAndCount(User, {
+      const [users, totalOfUsers] = await AppDataSource.manager.findAndCount(User, {
         order: { name: 'ASC' },
         take: args.input.limit ?? defaultLimit,
         skip: args.input.skip ?? defautSkip,
@@ -45,10 +45,10 @@ export const resolvers = {
       //skip - pular x números da lista
 
       const hasBefore = args.input.skip > 0;
-      const hasAfter = args.input.skip + args.input.limit < count;
+      const hasAfter = args.input.skip + args.input.limit < totalOfUsers;
       //lógica para saber se exitem usuários antes ou depois do que estão retornados
 
-      return { users, count, hasBefore, hasAfter };
+      return { users, totalOfUsers, hasBefore, hasAfter };
     },
   },
 
