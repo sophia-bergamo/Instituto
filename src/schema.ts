@@ -91,8 +91,8 @@ export interface TokenData {
 
 export interface UsersInput {
   input: {
-    limit: number;
-    skip: number;
+    limit?: number;
+    skip?: number;
   };
 }
 

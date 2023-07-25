@@ -22,30 +22,32 @@ export const resolvers = {
       await verifyJWT(ctx.token);
       const defaultLimit = 10;
       const defautSkip = 0;
+      const take = args.input.limit ?? defaultLimit;
+      const skip = args.input.skip ?? defautSkip;
 
-      if (args.input.skip < 0) {
+      if (skip < 0) {
         throw new InputError('Skip não pode ser negativo');
       }
 
-      if (args.input.limit < 0) {
+      if (take < 0) {
         throw new InputError('Limit não pode ser negativo');
       }
 
-      if (args.input.limit === 0) {
+      if (take === 0) {
         throw new InputError('Limit não pode ser zero');
       }
 
       const [users, totalOfUsers] = await AppDataSource.manager.findAndCount(User, {
         order: { name: 'ASC' },
-        take: args.input.limit ?? defaultLimit,
-        skip: args.input.skip ?? defautSkip,
+        take,
+        skip,
       });
       //order - define a ordem da lista => ascendente ou decrescente
       //take - limita o número de usuários retornados ou se for null, retorna 10 como default
       //skip - pular x números da lista
 
-      const hasBefore = args.input.skip > 0;
-      const hasAfter = args.input.skip + args.input.limit < totalOfUsers;
+      const hasBefore = skip > 0;
+      const hasAfter = skip + take < totalOfUsers;
       //lógica para saber se exitem usuários antes ou depois do que estão retornados
 
       return { users, totalOfUsers, hasBefore, hasAfter };

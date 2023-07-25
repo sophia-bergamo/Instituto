@@ -6,22 +6,21 @@ import { User } from '../entity/User';
 import { AppDataSource } from '../data-source';
 import { createFakerUsers } from '../seeds/factory';
 import { isDefined } from './is-defined';
-import { PaginatedUsers } from '../schema';
+import { PaginatedUsers, UserModel, UsersInput } from '../schema';
 
-describe('Graphql - Query Users ', async () => {
-  let usersDb: User[];
+describe('Graphql - Query Users ', () => {
   let token: string;
   let users: User[];
   let totalOfUsers: number;
   const validSkip = 0;
-  const validLimit = 10;
+  const validLimit = 15;
 
-  afterEach(async () => {
+  after(async () => {
     await cleanAll();
   });
 
-  beforeEach(async () => {
-    usersDb = await createFakerUsers(50);
+  before(async () => {
+    const usersDb = await createFakerUsers(50);
     token = createJwtToken({ payload: { userId: usersDb[0].id } });
     [users, totalOfUsers] = await AppDataSource.manager.findAndCount(User, { order: { name: 'ASC' } });
   });
@@ -42,12 +41,7 @@ describe('Graphql - Query Users ', async () => {
   }`;
 
   it('should return users from 1 to 10 using default inputs', async () => {
-    const variables = {
-      input: {
-        skip: validSkip,
-        limit: validLimit,
-      },
-    };
+    const variables = { input: {} };
 
     const response = await axios.post<{ data: { users: PaginatedUsers } }>(
       'http://localhost:4000/',
@@ -61,17 +55,10 @@ describe('Graphql - Query Users ', async () => {
     expect(userData.hasAfter).to.be.true;
     expect(userData.hasBefore).to.be.false;
 
-    for (const userResponse of userData.users) {
-      const userDb = users.find(({ id }) => id === userResponse.id);
-
-      isDefined(userDb);
-      expect(userResponse.name).to.be.eq(userDb.name);
-      expect(userResponse.email).to.be.eq(userDb.email);
-      expect(userResponse.birthDate).to.be.eq(userDb.birthDate);
-    }
+    checkUsers(userData.users);
   });
 
-  it('should have a skip greater than limit', async () => {
+  it('should return users from 11 to 16', async () => {
     const variables = {
       input: {
         skip: 10,
@@ -87,20 +74,16 @@ describe('Graphql - Query Users ', async () => {
 
     const userData = response.data.data.users;
 
-    for (const userResponse of userData.users) {
-      const userDb = users.find(({ id }) => id === userResponse.id);
+    expect(userData.totalOfUsers).to.be.eq(totalOfUsers);
+    expect(userData.hasAfter).to.be.true;
+    expect(userData.hasBefore).to.be.true;
 
-      isDefined(userDb);
-      expect(userResponse.name).to.be.eq(userDb.name);
-      expect(userResponse.email).to.be.eq(userDb.email);
-      expect(userResponse.birthDate).to.be.eq(userDb.birthDate);
-    }
+    checkUsers(userData.users, 5, 10);
   });
 
   it('should return all users if limit is equal to the number of users in database', async () => {
     const variables = {
       input: {
-        skip: validSkip,
         limit: totalOfUsers,
       },
     };
@@ -113,21 +96,17 @@ describe('Graphql - Query Users ', async () => {
 
     const userData = response.data.data.users;
 
-    for (const userResponse of userData.users) {
-      const userDb = users.find(({ id }) => id === userResponse.id);
+    expect(userData.totalOfUsers).to.be.eq(totalOfUsers);
+    expect(userData.hasAfter).to.be.false;
+    expect(userData.hasBefore).to.be.false;
 
-      isDefined(userDb);
-      expect(userResponse.name).to.be.eq(userDb.name);
-      expect(userResponse.email).to.be.eq(userDb.email);
-      expect(userResponse.birthDate).to.be.eq(userDb.birthDate);
-    }
+    checkUsers(userData.users, totalOfUsers);
   });
 
   it('should return an empty array if skip is equal to the number of users in database', async () => {
     const variables = {
       input: {
         skip: totalOfUsers,
-        limit: validLimit,
       },
     };
 
@@ -143,32 +122,6 @@ describe('Graphql - Query Users ', async () => {
     expect(userData.hasBefore).to.be.true;
     expect(userData.users).to.be.deep.eq([]);
     expect(userData.hasAfter).to.be.false;
-  });
-
-  it('should return the default values if skip and limit are null', async () => {
-    const variables = {
-      input: {
-        skip: null,
-        limit: null,
-      },
-    };
-
-    const response = await axios.post<{ data: { users: PaginatedUsers } }>(
-      'http://localhost:4000/',
-      { query, variables },
-      { headers: { Authorization: token } },
-    );
-
-    const userData = response.data.data.users;
-
-    for (const userResponse of userData.users) {
-      const userDb = users.find(({ id }) => id === userResponse.id);
-
-      isDefined(userDb);
-      expect(userResponse.name).to.be.eq(userDb.name);
-      expect(userResponse.email).to.be.eq(userDb.email);
-      expect(userResponse.birthDate).to.be.eq(userDb.birthDate);
-    }
   });
 
   it('should return all users if limit is greater than the total number of users', async () => {
@@ -187,14 +140,11 @@ describe('Graphql - Query Users ', async () => {
 
     const userData = response.data.data.users;
 
-    for (const userResponse of userData.users) {
-      const userDb = users.find(({ id }) => id === userResponse.id);
+    expect(userData.totalOfUsers).to.be.eq(totalOfUsers);
+    expect(userData.hasAfter).to.be.false;
+    expect(userData.hasBefore).to.be.false;
 
-      isDefined(userDb);
-      expect(userResponse.name).to.be.eq(userDb.name);
-      expect(userResponse.email).to.be.eq(userDb.email);
-      expect(userResponse.birthDate).to.be.eq(userDb.birthDate);
-    }
+    checkUsers(userData.users, totalOfUsers);
   });
 
   it('should return an empty array if skip is greater than the total number of users', async () => {
@@ -293,4 +243,18 @@ describe('Graphql - Query Users ', async () => {
     expect(error.message).to.be.eq('Limit não pode ser negativo');
     expect(error.code).to.be.eq(400);
   });
+
+  function checkUsers(response: UserModel[], limit = 10, skip = 0) {
+    expect(response.length).to.be.eq(limit);
+
+    for (let i = 0; i < response.length; i++) {
+      const userDb = users[i + skip];
+      const userResponse = response[i];
+
+      isDefined(userDb);
+      expect(userResponse.name).to.be.eq(userDb.name);
+      expect(userResponse.email).to.be.eq(userDb.email);
+      expect(userResponse.birthDate).to.be.eq(userDb.birthDate);
+    }
+  }
 });
