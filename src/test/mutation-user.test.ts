@@ -1,23 +1,22 @@
-import axios from "axios";
-import {expect} from "chai";
-import chai = require("chai");
-import {cleanAll} from "./clear";
-import {createUser} from "./create-user";
-import {User} from "../entity/User";
-import {faker} from "@faker-js/faker";
-import {AppDataSource} from "../data-source";
-import {createJwtToken} from "./createJwtToken";
-import {TokenData} from "../schema";
+import axios from 'axios';
+import { expect } from 'chai';
+import chai = require('chai');
+import { cleanAll } from './clear';
+import { createUser } from './create-user';
+import { User } from '../entity/User';
+import { faker } from '@faker-js/faker';
+import { AppDataSource } from '../data-source';
+import { createJwtToken } from './createJwtToken';
 
-describe("Graphql - Mutation CreateUser", () => {
+describe('Graphql - Mutation CreateUser', () => {
   let token: string;
   let userDb: User;
-  const validPassword = "1234qwer";
-  const validEmail = "valid.email@gmail.com";
+  const validPassword = '1234qwer';
+  const validEmail = 'valid.email@gmail.com';
 
   beforeEach(async () => {
     userDb = await createUser();
-    token = createJwtToken({payload: {userId: userDb.id}, extendedExpiration: true});
+    token = createJwtToken({ payload: { userId: userDb.id }, extendedExpiration: true });
   });
 
   //depois de cada teste
@@ -35,7 +34,7 @@ describe("Graphql - Mutation CreateUser", () => {
     } 
   }`;
 
-  it("should return user successfully", async () => {
+  it('should return user successfully', async () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
@@ -46,16 +45,16 @@ describe("Graphql - Mutation CreateUser", () => {
     };
 
     const response = await axios.post(
-      "http://localhost:4000/",
+      'http://localhost:4000/',
       {
         query,
         variables,
       },
-      {headers: {Authorization: token}},
+      { headers: { Authorization: token } },
     );
 
     const result = response.data.data;
-    const userDb = await AppDataSource.manager.findOneOrFail(User, {where: {id: result.createUser.id}});
+    const userDb = await AppDataSource.manager.findOneOrFail(User, { where: { id: result.createUser.id } });
     expect(userDb.birthDate).to.be.eq(result.createUser.birthDate);
     expect(userDb.email).to.be.eq(result.createUser.email);
     expect(userDb.name).to.be.eq(result.createUser.name);
@@ -67,7 +66,7 @@ describe("Graphql - Mutation CreateUser", () => {
     expect(userDb.password).to.not.be.eq(variables.input.password);
   });
 
-  it("should throw error if user is not authenticated", async () => {
+  it('should throw error if user is not authenticated', async () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
@@ -77,7 +76,7 @@ describe("Graphql - Mutation CreateUser", () => {
       },
     };
 
-    const response = await axios.post("http://localhost:4000/", {
+    const response = await axios.post('http://localhost:4000/', {
       query,
       variables,
     });
@@ -88,7 +87,7 @@ describe("Graphql - Mutation CreateUser", () => {
     expect(response.data.data).to.be.eq(null);
   });
 
-  it("should throw error if email is already registered", async () => {
+  it('should throw error if email is already registered', async () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
@@ -98,81 +97,101 @@ describe("Graphql - Mutation CreateUser", () => {
       },
     };
 
-    const response = await axios.post("http://localhost:4000/", {query, variables}, {headers: {Authorization: token}});
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
 
     expect(response.data.errors).to.have.lengthOf(1);
     const error = response.data.errors[0];
-    expect(error.message).to.be.eq("Email já registrado");
+    expect(error.message).to.be.eq('Email já registrado');
     expect(error.code).to.be.eq(400);
   });
 
-  it("should throw error if the password has only numbers", async () => {
+  it('should throw error if the password has only numbers', async () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
         email: validEmail,
         name: faker.person.firstName(),
-        password: "123456",
+        password: '123456',
       },
     };
 
-    const response = await axios.post("http://localhost:4000/", {query, variables}, {headers: {Authorization: token}});
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
 
     const error = response.data.errors[0];
-    expect(error.message).to.be.eq("Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito");
+    expect(error.message).to.be.eq('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
     expect(error.code).to.be.eq(400);
   });
 
-  it("should throw error if the password has only letters", async () => {
+  it('should throw error if the password has only letters', async () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
         email: validEmail,
         name: faker.person.firstName(),
-        password: "password",
+        password: 'password',
       },
     };
 
-    const response = await axios.post("http://localhost:4000/", {query, variables}, {headers: {Authorization: token}});
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
 
     expect(response.data.errors).to.have.lengthOf(1);
     const error = response.data.errors[0];
-    expect(error.message).to.be.eq("Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito");
+    expect(error.message).to.be.eq('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
     expect(error.code).to.be.eq(400);
   });
 
-  it("should throw error if the password is too short", async () => {
+  it('should throw error if the password is too short', async () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
         email: validEmail,
         name: faker.person.firstName(),
-        password: "123q",
+        password: '123q',
       },
     };
 
-    const response = await axios.post("http://localhost:4000/", {query, variables}, {headers: {Authorization: token}});
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
 
     expect(response.data.errors).to.have.lengthOf(1);
     const error = response.data.errors[0];
-    expect(error.message).to.be.eq("Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito");
+    expect(error.message).to.be.eq('Senha inválida, deve conter ao menos 6 caracteres, 1 letra e um dígito');
     expect(error.code).to.be.eq(400);
   });
 
-  it("should throw error if the email is invalid", async () => {
+  it('should throw error if the email is invalid', async () => {
     const variables = {
       input: {
         birthDate: faker.date.birthdate().toDateString(),
-        email: "invalid.email",
+        email: 'invalid.email',
         name: faker.person.firstName(),
         password: validPassword,
       },
     };
 
-    const response = await axios.post("http://localhost:4000/", {query, variables}, {headers: {Authorization: token}});
+    const response = await axios.post(
+      'http://localhost:4000/',
+      { query, variables },
+      { headers: { Authorization: token } },
+    );
 
     const error = response.data.errors[0];
-    expect(error.message).to.be.eq("Email inválido");
+    expect(error.message).to.be.eq('Email inválido');
     expect(error.code).to.be.eq(400);
   });
 });
