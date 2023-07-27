@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { User } from '../entity/User';
 import { faker } from '@faker-js/faker';
 import { AppDataSource } from '../data-source';
+import { Address } from '../entity/Address';
 
 export async function createUser(password?: string) {
   const hashedPassword = await bcrypt.hash(password ?? faker.internet.password(), 10);
@@ -11,6 +12,17 @@ export async function createUser(password?: string) {
   user.email = faker.internet.email();
   user.password = hashedPassword; //armazena o hash invés da senha
   user.birthDate = faker.date.birthdate().toDateString();
+
+  const addresses = new Address();
+  addresses.cep = faker.location.zipCode();
+  addresses.city = faker.location.city();
+  addresses.complement = faker.location.secondaryAddress();
+  addresses.neighborhood = faker.location.county();
+  addresses.state = faker.location.state();
+  addresses.street = faker.location.street();
+  addresses.streetNumber = Number(faker.location.buildingNumber());
+
+  user.addresses = [addresses];
 
   return await AppDataSource.manager.save(user);
 }

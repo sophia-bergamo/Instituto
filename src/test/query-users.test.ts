@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { expect } from 'chai';
 import { cleanAll } from './clear';
-import { createJwtToken } from './createJwtToken';
+import { createJwtToken } from './create-jwt-token';
 import { User } from '../entity/User';
 import { AppDataSource } from '../data-source';
 import { createFakerUsers } from '../seeds/factory';
-import { isDefined } from './is-defined';
-import { PaginatedUsers, UserModel, UsersInput } from '../schema';
+import { PaginatedUsers } from '../schema';
+import { checkUsers } from './check.test';
 
 describe('Graphql - Query Users ', () => {
   let token: string;
@@ -20,9 +20,12 @@ describe('Graphql - Query Users ', () => {
   });
 
   before(async () => {
-    const usersDb = await createFakerUsers(50);
+    const usersDb = await createFakerUsers(20);
     token = createJwtToken({ payload: { userId: usersDb[0].id } });
-    [users, totalOfUsers] = await AppDataSource.manager.findAndCount(User, { order: { name: 'ASC' } });
+    [users, totalOfUsers] = await AppDataSource.manager.findAndCount(User, {
+      order: { name: 'ASC' },
+      relations: { addresses: true },
+    });
   });
 
   const query = `
@@ -35,6 +38,16 @@ describe('Graphql - Query Users ', () => {
         name
         email
         birthDate
+        addresses {
+          id
+          cep
+          street
+          streetNumber
+          complement
+          neighborhood
+          city
+          state
+        }
       }
       hasAfter
     }
@@ -55,7 +68,7 @@ describe('Graphql - Query Users ', () => {
     expect(userData.hasAfter).to.be.true;
     expect(userData.hasBefore).to.be.false;
 
-    checkUsers(userData.users);
+    checkUsers(userData.users, users);
   });
 
   it('should return users from 11 to 16', async () => {
@@ -78,7 +91,7 @@ describe('Graphql - Query Users ', () => {
     expect(userData.hasAfter).to.be.true;
     expect(userData.hasBefore).to.be.true;
 
-    checkUsers(userData.users, 5, 10);
+    checkUsers(userData.users, users, 5, 10);
   });
 
   it('should return all users if limit is equal to the number of users in database', async () => {
@@ -100,7 +113,7 @@ describe('Graphql - Query Users ', () => {
     expect(userData.hasAfter).to.be.false;
     expect(userData.hasBefore).to.be.false;
 
-    checkUsers(userData.users, totalOfUsers);
+    checkUsers(userData.users, users, totalOfUsers);
   });
 
   it('should return an empty array if skip is equal to the number of users in database', async () => {
@@ -144,7 +157,7 @@ describe('Graphql - Query Users ', () => {
     expect(userData.hasAfter).to.be.false;
     expect(userData.hasBefore).to.be.false;
 
-    checkUsers(userData.users, totalOfUsers);
+    checkUsers(userData.users, users, totalOfUsers);
   });
 
   it('should return an empty array if skip is greater than the total number of users', async () => {
@@ -243,18 +256,4 @@ describe('Graphql - Query Users ', () => {
     expect(error.message).to.be.eq('Limit não pode ser negativo');
     expect(error.code).to.be.eq(400);
   });
-
-  function checkUsers(response: UserModel[], limit = 10, skip = 0) {
-    expect(response.length).to.be.eq(limit);
-
-    for (let i = 0; i < response.length; i++) {
-      const userDb = users[i + skip];
-      const userResponse = response[i];
-
-      isDefined(userDb);
-      expect(userResponse.name).to.be.eq(userDb.name);
-      expect(userResponse.email).to.be.eq(userDb.email);
-      expect(userResponse.birthDate).to.be.eq(userDb.birthDate);
-    }
-  }
 });
