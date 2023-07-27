@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { cleanAll } from './clear';
 import { createUser } from './create-user';
 import { createJwtToken } from './create-jwt-token';
-import { User } from '../entity/User';
+import { User } from '../entity/user';
 import { checkAddress, checkUsers } from './check.test';
 import { UserModel } from '../schema';
 

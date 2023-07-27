@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import chai = require('chai');
 import { cleanAll } from './clear';
 import { createUser } from './create-user';
-import { User } from '../entity/User';
+import { User } from '../entity/user';
 import { faker } from '@faker-js/faker';
 import { AppDataSource } from '../data-source';
 import { createJwtToken } from './create-jwt-token';

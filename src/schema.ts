@@ -71,26 +71,20 @@ export const typeDefs = `#graphql
 //interface para conectar args com os inputs
 //typescript como default é obrigatório, para ser "opcional" -> ?
 export interface CreateUserInput {
-  input: {
-    name: string;
-    email: string;
-    password: string;
-    birthDate: string;
-  };
+  name: string;
+  email: string;
+  password: string;
+  birthDate: string;
 }
 
 export interface LoginInput {
-  input: {
-    email: string;
-    password: string;
-    rememberMe: boolean;
-  };
+  email: string;
+  password: string;
+  rememberMe: boolean;
 }
 
 export interface UserInput {
-  input: {
-    userId: number;
-  };
+  userId: number;
 }
 
 export interface ServerContext {
@@ -102,10 +96,8 @@ export interface TokenData {
 }
 
 export interface UsersInput {
-  input: {
-    limit?: number;
-    skip?: number;
-  };
+  limit?: number;
+  skip?: number;
 }
 
 export interface PaginatedUsers {

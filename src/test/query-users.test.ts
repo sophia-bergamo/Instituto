@@ -2,7 +2,7 @@ import axios from 'axios';
 import { expect } from 'chai';
 import { cleanAll } from './clear';
 import { createJwtToken } from './create-jwt-token';
-import { User } from '../entity/User';
+import { User } from '../entity/user';
 import { AppDataSource } from '../data-source';
 import { createFakerUsers } from '../seeds/factory';
 import { PaginatedUsers } from '../schema';

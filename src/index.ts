@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { initialize } from './initialize';
 import * as dotenv from 'dotenv';
 

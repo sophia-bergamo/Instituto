@@ -1,8 +1,8 @@
-import { User } from '../entity/User';
+import { User } from '../entity/user';
 import { AppDataSource } from '../data-source';
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcrypt';
-import { Address } from '../entity/Address';
+import { Address } from '../entity/address';
 
 //salvando varios usuarios de uma vez utilizando um array vazio e populando ele
 //fazendo com que acesse o banco uma única vez
