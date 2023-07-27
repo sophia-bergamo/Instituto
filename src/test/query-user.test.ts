@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { expect } from 'chai';
 import { cleanAll } from './clear';
-import Jwt from 'jsonwebtoken';
 import { createUser } from './create-user';
-import { createJwtToken } from './createJwtToken';
+import { createJwtToken } from './create-jwt-token';
 import { User } from '../entity/User';
+import { checkAddress, checkUsers } from './check.test';
+import { UserModel } from '../schema';
 
 describe('Graphql - Query User', () => {
   let userDb: User;
@@ -26,6 +27,16 @@ describe('Graphql - Query User', () => {
       name
       email
       birthDate
+      addresses {
+        id
+        cep
+        street
+        streetNumber
+        complement
+        neighborhood
+        city
+        state
+      }
     }
   }`;
 
@@ -35,7 +46,7 @@ describe('Graphql - Query User', () => {
         userId: userDb.id,
       },
     };
-    const response = await axios.post(
+    const response = await axios.post<{ data: { user: UserModel } }>(
       'http://localhost:4000/',
       {
         query,
@@ -49,10 +60,13 @@ describe('Graphql - Query User', () => {
     );
 
     const userData = response.data.data.user;
+
     expect(userData.id).to.be.eq(userDb.id);
     expect(userData.birthDate).to.be.eq(userDb.birthDate);
     expect(userData.email).to.be.eq(userDb.email);
     expect(userData.name).to.be.eq(userDb.name);
+
+    checkAddress(userData.addresses, userDb.addresses);
   });
 
   it('should throw error if user is not found', async () => {
@@ -78,7 +92,7 @@ describe('Graphql - Query User', () => {
     const error = response.data.errors[0];
     expect(error.message).to.be.eq('Id Not found');
     expect(error.code).to.be.eq(404);
-    expect(response.data.data.user).to.be.eq(null);
+    expect(response.data.data).to.be.eq(null);
   });
 
   it('should throw error if user is not authenticated', async () => {
@@ -98,6 +112,6 @@ describe('Graphql - Query User', () => {
 
     expect(error.message).to.be.eq(`Credenciais inválidas`);
     expect(error.code).to.be.eq(401);
-    expect(response.data.data.user).to.be.eq(null);
+    expect(response.data.data).to.be.eq(null);
   });
 });

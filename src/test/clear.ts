@@ -1,3 +1,4 @@
+import { table } from 'console';
 import { AppDataSource } from '../data-source';
 
 // function nomeDafuncao() {}
@@ -12,6 +13,8 @@ export async function cleanAll() {
   //pra cada entity dentro da const entites vai ser atribuído o valor da constante (entity.name) - Entity.Metadata
   for (const entity of entities) {
     const repository = AppDataSource.getRepository(entity.name);
-    await repository.query(`TRUNCATE TABLE \"${entity.tableName}\";`);
+    await repository.query(`ALTER TABLE "${entity.tableName}" DISABLE TRIGGER ALL;
+    DELETE FROM "${entity.tableName}";
+    ALTER TABLE "${entity.tableName}" ENABLE TRIGGER ALL`);
   }
 }

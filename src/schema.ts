@@ -4,8 +4,19 @@ export const typeDefs = `#graphql
 
   type Query{
     hello: String
-    user(input: UserInput!): User
+    user(input: UserInput!): User!
     users(input: UsersInput): PaginatedUsers!
+  }
+
+  type Address {
+    id: Int!
+    cep: String!
+    street: String!
+    streetNumber: Int!
+    complement: String
+    neighborhood: String!
+    city: String!
+    state: String!
   }
 
   type PaginatedUsers {
@@ -43,6 +54,7 @@ export const typeDefs = `#graphql
   }
 
    type User {
+    addresses: [Address]!
     id: Int!
     name: String!
     email: String!
@@ -104,8 +116,20 @@ export interface PaginatedUsers {
 }
 
 export interface UserModel {
+  addresses: AddressesModel[];
   id: number;
   name: string;
   email: string;
   birthDate: string;
+}
+
+export interface AddressesModel {
+  id: number;
+  cep: string;
+  street: string;
+  streetNumber: number;
+  complement: string;
+  neighborhood: string;
+  city: string;
+  state: string;
 }

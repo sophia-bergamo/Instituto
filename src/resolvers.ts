@@ -12,7 +12,10 @@ export const resolvers = {
     hello: () => 'Hello World',
     user: async (_: any, args: UserInput, ctx: ServerContext) => {
       await verifyJWT(ctx.token);
-      const user = await AppDataSource.manager.findOne(User, { where: { id: args.input.userId } });
+      const user = await AppDataSource.manager.findOne(User, {
+        where: { id: args.input.userId },
+        relations: { addresses: true },
+      });
       if (!user) {
         throw new NotFoundError('Id Not found');
       }
@@ -39,6 +42,7 @@ export const resolvers = {
 
       const [users, totalOfUsers] = await AppDataSource.manager.findAndCount(User, {
         order: { name: 'ASC' },
+        relations: { addresses: true },
         take,
         skip,
       });
