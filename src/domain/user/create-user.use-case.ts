@@ -1,6 +1,6 @@
-import { AppDataSource } from '../../data-source';
-import { User } from '../../entity/user';
-import { CreateUserInput } from '../../schema';
+import { AppDataSource } from '../../data/data-source';
+import { User } from '../../data/entity/user';
+import { CreateUserInput } from '../../api/schema';
 import { InputError } from '../../test/error';
 import * as bcrypt from 'bcrypt';
 

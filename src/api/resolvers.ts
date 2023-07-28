@@ -1,7 +1,7 @@
 import { CreateUserInput, UserInput, LoginInput, ServerContext, UsersInput } from './schema';
-import { verifyJWT } from './verify';
-import { loginUseCase } from './domain/auth';
-import { userUseCase, usersUseCase, createUserUseCase } from './domain/user';
+import { verifyJWT } from '../utils/verify';
+import { loginUseCase } from '../domain/auth';
+import { userUseCase, usersUseCase, createUserUseCase } from '../domain/user';
 
 export const resolvers = {
   Query: {
@@ -18,7 +18,7 @@ export const resolvers = {
 
   Mutation: {
     createUser: async (_: any, args: { input: CreateUserInput }, ctx: ServerContext) => {
-      await verifyJWT(ctx.token);
+      //await verifyJWT(ctx.token);
       return createUserUseCase(args.input);
     },
     login: (_: any, args: { input: LoginInput }) => {

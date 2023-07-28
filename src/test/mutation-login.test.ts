@@ -2,7 +2,7 @@ import axios from 'axios';
 import { expect } from 'chai';
 import { cleanAll } from './clear';
 import { createUser } from './create-user';
-import { User } from '../entity/user';
+import { User } from '../data/entity/user';
 import { faker } from '@faker-js/faker';
 import Jwt from 'jsonwebtoken';
 

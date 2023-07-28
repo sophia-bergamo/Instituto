@@ -54,7 +54,7 @@ export const typeDefs = `#graphql
   }
 
    type User {
-    addresses: [Address]!
+    addresses: [Address]
     id: Int!
     name: String!
     email: String!

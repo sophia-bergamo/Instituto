@@ -1,6 +1,6 @@
-import { AppDataSource } from '../../data-source';
-import { User } from '../../entity/user';
-import { LoginInput } from '../../schema';
+import { AppDataSource } from '../../data/data-source';
+import { User } from '../../data/entity/user';
+import { LoginInput } from '../../api/schema';
 import { UnauthorizedError } from '../../test/error';
 import * as bcrypt from 'bcrypt';
 import Jwt from 'jsonwebtoken';

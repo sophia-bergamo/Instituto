@@ -2,10 +2,10 @@ import axios from 'axios';
 import { expect } from 'chai';
 import { cleanAll } from './clear';
 import { createJwtToken } from './create-jwt-token';
-import { User } from '../entity/user';
-import { AppDataSource } from '../data-source';
+import { User } from '../data/entity/user';
+import { AppDataSource } from '../data/data-source';
 import { createFakerUsers } from '../seeds/factory';
-import { PaginatedUsers } from '../schema';
+import { PaginatedUsers } from '../api/schema';
 import { checkUsers } from './check.test';
 
 describe('Graphql - Query Users ', () => {

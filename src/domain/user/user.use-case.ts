@@ -1,6 +1,6 @@
-import { AppDataSource } from '../../data-source';
-import { User } from '../../entity/user';
-import { UserInput } from '../../schema';
+import { AppDataSource } from '../../data/data-source';
+import { User } from '../../data/entity/user';
+import { UserInput } from '../../api/schema';
 import { NotFoundError } from '../../test/error';
 
 export async function userUseCase(input: UserInput) {

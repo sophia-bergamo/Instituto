@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { AppDataSource } from './data-source';
+import { AppDataSource } from './data/data-source';
 import { unwrapResolverError } from '@apollo/server/errors';
-import { resolvers } from './resolvers';
-import { ServerContext, typeDefs } from './schema';
+import { resolvers } from './api/resolvers';
+import { ServerContext, typeDefs } from './api/schema';
 
 //Para lidar com Promises, definir a ordem usando o await
 export async function initialize() {
