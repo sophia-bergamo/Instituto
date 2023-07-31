@@ -1,5 +1,5 @@
 import Jwt from 'jsonwebtoken';
-import { AppDataSource } from '../data/data-source';
+import { AppDataSource } from '../data/db/db.config';
 import { User } from '../data/entity/user';
 import { UnauthorizedError } from '../test/error';
 

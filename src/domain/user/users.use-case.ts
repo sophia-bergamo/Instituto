@@ -1,7 +1,11 @@
-import { AppDataSource } from '../../data/data-source';
+import { AppDataSource } from '../../data/db/db.config';
 import { User } from '../../data/entity/user';
-import { UsersInput } from '../../api/schema';
 import { InputError } from '../../test/error';
+
+interface UsersInput {
+  limit?: number;
+  skip?: number;
+}
 
 export async function usersUseCase(input: UsersInput) {
   const defaultLimit = 10;

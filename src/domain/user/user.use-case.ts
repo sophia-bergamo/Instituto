@@ -1,7 +1,10 @@
-import { AppDataSource } from '../../data/data-source';
+import { AppDataSource } from '../../data/db/db.config';
 import { User } from '../../data/entity/user';
-import { UserInput } from '../../api/schema';
 import { NotFoundError } from '../../test/error';
+
+interface UserInput {
+  userId: number;
+}
 
 export async function userUseCase(input: UserInput) {
   const user = await AppDataSource.manager.findOne(User, {

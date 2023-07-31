@@ -3,10 +3,10 @@ import { expect } from 'chai';
 import { cleanAll } from './clear';
 import { createJwtToken } from './create-jwt-token';
 import { User } from '../data/entity/user';
-import { AppDataSource } from '../data/data-source';
+import { AppDataSource } from '../data/db/db.config';
 import { createFakerUsers } from '../seeds/factory';
-import { PaginatedUsers } from '../api/schema';
 import { checkUsers } from './check.test';
+import { PaginatedUsers } from '../api/user';
 
 describe('Graphql - Query Users ', () => {
   let token: string;

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { User } from '../data/entity/user';
 import { faker } from '@faker-js/faker';
-import { AppDataSource } from '../data/data-source';
+import { AppDataSource } from '../data/db/db.config';
 import { Address } from '../data/entity/address';
 
 export async function createUser(password?: string) {

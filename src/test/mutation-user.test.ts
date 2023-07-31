@@ -5,7 +5,7 @@ import { cleanAll } from './clear';
 import { createUser } from './create-user';
 import { User } from '../data/entity/user';
 import { faker } from '@faker-js/faker';
-import { AppDataSource } from '../data/data-source';
+import { AppDataSource } from '../data/db/db.config';
 import { createJwtToken } from './create-jwt-token';
 
 describe('Graphql - Mutation CreateUser', () => {

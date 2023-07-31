@@ -1,9 +1,14 @@
-import { AppDataSource } from '../../data/data-source';
+import { AppDataSource } from '../../data/db/db.config';
 import { User } from '../../data/entity/user';
-import { LoginInput } from '../../api/schema';
 import { UnauthorizedError } from '../../test/error';
 import * as bcrypt from 'bcrypt';
 import Jwt from 'jsonwebtoken';
+
+interface LoginInput {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
 
 export async function loginUseCase(input: LoginInput) {
   //bate no banco e acha um usuário pelo email

@@ -1,8 +1,14 @@
-import { AppDataSource } from '../../data/data-source';
+import { AppDataSource } from '../../data/db/db.config';
 import { User } from '../../data/entity/user';
-import { CreateUserInput } from '../../api/schema';
 import { InputError } from '../../test/error';
 import * as bcrypt from 'bcrypt';
+
+interface CreateUserInput {
+  name: string;
+  email: string;
+  password: string;
+  birthDate: string;
+}
 
 export async function createUserUseCase(input: CreateUserInput) {
   //busca do email - busca no banco se já existe um email igual

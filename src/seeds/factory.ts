@@ -1,5 +1,5 @@
 import { User } from '../data/entity/user';
-import { AppDataSource } from '../data/data-source';
+import { AppDataSource } from '../data/db/db.config';
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcrypt';
 import { Address } from '../data/entity/address';

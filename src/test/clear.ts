@@ -1,5 +1,5 @@
 import { table } from 'console';
-import { AppDataSource } from '../data/data-source';
+import { AppDataSource } from '../data/db/db.config';
 
 // function nomeDafuncao() {}
 // async function nomeDafuncao() {}

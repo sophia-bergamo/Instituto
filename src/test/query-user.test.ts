@@ -5,7 +5,7 @@ import { createUser } from './create-user';
 import { createJwtToken } from './create-jwt-token';
 import { User } from '../data/entity/user';
 import { checkAddress, checkUsers } from './check.test';
-import { UserModel } from '../api/schema';
+import { UserModel } from '../api/user';
 
 describe('Graphql - Query User', () => {
   let userDb: User;

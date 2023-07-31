@@ -1,8 +1,9 @@
 import { expect } from 'chai';
-import { AddressesModel, UserModel } from '../api/schema';
 import { isDefined } from './is-defined';
 import { Address } from '../data/entity/address';
 import { User } from '../data/entity/user';
+import { AddressesModel } from '../api/address';
+import { UserModel } from '../api/user';
 
 export function checkAddress(response: AddressesModel[], addressesDb: Address[]) {
   expect(response.length).to.be.eq(addressesDb.length);
