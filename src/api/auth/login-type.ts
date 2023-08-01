@@ -21,6 +21,6 @@ class Login {
   @Field()
   token!: string;
 
-  @Field((type) => UserModel)
+  @Field(() => UserModel)
   user!: UserModel;
 }

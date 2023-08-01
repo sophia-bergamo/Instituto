@@ -6,7 +6,26 @@ interface UserInput {
   userId: number;
 }
 
-export async function userUseCase(input: UserInput) {
+export interface UserModel {
+  addresses: AddressesModel[];
+  id: number;
+  name: string;
+  email: string;
+  birthDate: string;
+}
+
+interface AddressesModel {
+  id: number;
+  cep: string;
+  street: string;
+  streetNumber: number;
+  complement: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+}
+
+export async function userUseCase(input: UserInput): Promise<UserModel> {
   const user = await AppDataSource.manager.findOne(User, {
     where: { id: input.userId },
     relations: { addresses: true },

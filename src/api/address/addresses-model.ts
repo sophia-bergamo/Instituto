@@ -4,7 +4,7 @@ import { Field, Int, ObjectType } from 'type-graphql';
 export
 @ObjectType()
 class AddressesModel {
-  @Field((type) => Int)
+  @Field(() => Int)
   id!: number;
 
   @Field()
@@ -13,7 +13,7 @@ class AddressesModel {
   @Field()
   street!: string;
 
-  @Field((type) => Int)
+  @Field(() => Int)
   streetNumber!: number;
 
   @Field()

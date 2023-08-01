@@ -4,7 +4,6 @@ import { userUseCase, usersUseCase, createUserUseCase } from '../domain/user';
 import { ServerContext, LoginInput, Login } from './auth';
 import { UserInput, UsersInput, CreateUserInput, PaginatedUsers, UserModel } from './user';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { User } from '../data/entity/user';
 
 @Resolver()
 export class UserResolver {
@@ -13,7 +12,7 @@ export class UserResolver {
     return 'Hello World';
   }
 
-  @Query(() => User)
+  @Query(() => UserModel)
   async user(@Arg('input') input: UserInput, @Ctx() ctx: ServerContext) {
     await verifyJWT(ctx.token);
     return userUseCase(input);

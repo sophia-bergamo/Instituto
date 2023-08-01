@@ -21,7 +21,7 @@ class CreateUserInput {
 export
 @InputType()
 class UserInput {
-  @Field((type) => Int)
+  @Field(() => Int)
   userId!: number;
 }
 
@@ -38,10 +38,10 @@ class UsersInput {
 export
 @ObjectType()
 class PaginatedUsers {
-  @Field((type) => [UserModel])
+  @Field(() => [UserModel])
   users!: UserModel[];
 
-  @Field((type) => Int)
+  @Field(() => Int)
   totalOfUsers!: number;
 
   @Field()
@@ -54,10 +54,10 @@ class PaginatedUsers {
 export
 @ObjectType()
 class UserModel {
-  @Field((type) => [AddressesModel])
+  @Field(() => [AddressesModel])
   addresses!: AddressesModel[];
 
-  @Field((type) => Int)
+  @Field(() => Int)
   id!: number;
 
   @Field()

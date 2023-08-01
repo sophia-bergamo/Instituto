@@ -11,6 +11,6 @@ class ServerContext {
 export
 @ObjectType()
 class TokenData {
-  @Field((type) => Int)
+  @Field(() => Int)
   userId!: number;
 }

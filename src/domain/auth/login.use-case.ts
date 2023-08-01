@@ -3,6 +3,7 @@ import { User } from '../../data/entity/user';
 import { UnauthorizedError } from '../../test/error';
 import * as bcrypt from 'bcrypt';
 import Jwt from 'jsonwebtoken';
+import { UserModel } from '../user';
 
 interface LoginInput {
   email: string;
@@ -10,7 +11,12 @@ interface LoginInput {
   rememberMe: boolean;
 }
 
-export async function loginUseCase(input: LoginInput) {
+interface LoginModel {
+  token: string;
+  user: UserModel;
+}
+
+export async function loginUseCase(input: LoginInput): Promise<LoginModel> {
   //bate no banco e acha um usuário pelo email
   const user = await AppDataSource.manager.findOne(User, { where: { email: input.email } });
   if (!user) {

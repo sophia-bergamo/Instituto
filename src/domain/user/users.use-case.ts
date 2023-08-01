@@ -1,3 +1,4 @@
+import { UserModel } from '.';
 import { AppDataSource } from '../../data/db/db.config';
 import { User } from '../../data/entity/user';
 import { InputError } from '../../test/error';
@@ -7,7 +8,14 @@ interface UsersInput {
   skip?: number;
 }
 
-export async function usersUseCase(input: UsersInput) {
+interface PaginatedUsers {
+  totalOfUsers: number;
+  hasBefore: boolean;
+  hasAfter: boolean;
+  users: UserModel[];
+}
+
+export async function usersUseCase(input: UsersInput): Promise<PaginatedUsers> {
   const defaultLimit = 10;
   const defautSkip = 0;
   const take = input.limit ?? defaultLimit;

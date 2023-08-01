@@ -10,7 +10,14 @@ interface CreateUserInput {
   birthDate: string;
 }
 
-export async function createUserUseCase(input: CreateUserInput) {
+interface CreateUserModel {
+  name: string;
+  email: string;
+  password: string;
+  birthDate: string;
+}
+
+export async function createUserUseCase(input: CreateUserInput): Promise<CreateUserModel> {
   //busca do email - busca no banco se já existe um email igual
   const storageUsers = await AppDataSource.manager.findOne(User, { where: { email: input.email } });
   if (storageUsers) {
