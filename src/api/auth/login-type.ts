@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { Field, InputType, ObjectType } from 'type-graphql';
 import { UserModel } from '../user';
 

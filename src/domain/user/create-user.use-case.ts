@@ -11,6 +11,7 @@ interface CreateUserInput {
 }
 
 interface CreateUserModel {
+  id: number;
   name: string;
   email: string;
   password: string;
