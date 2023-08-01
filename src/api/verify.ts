@@ -1,7 +1,7 @@
 import Jwt from 'jsonwebtoken';
-import { AppDataSource } from './data-source';
-import { User } from './entity/User';
-import { UnauthorizedError } from './test/error';
+import { AppDataSource } from '../data/db/db.config';
+import { User } from '../data/entity/user';
+import { UnauthorizedError } from '../test/error';
 
 //função que verifica se dentro do token existe realmente o id que o usuário mandou
 export async function verifyJWT(token?: string) {

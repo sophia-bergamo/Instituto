@@ -3,9 +3,9 @@ import { expect } from 'chai';
 import chai = require('chai');
 import { cleanAll } from './clear';
 import { createUser } from './create-user';
-import { User } from '../entity/User';
+import { User } from '../data/entity/user';
 import { faker } from '@faker-js/faker';
-import { AppDataSource } from '../data-source';
+import { AppDataSource } from '../data/db/db.config';
 import { createJwtToken } from './create-jwt-token';
 
 describe('Graphql - Mutation CreateUser', () => {

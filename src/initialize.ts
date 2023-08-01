@@ -1,18 +1,17 @@
 import 'reflect-metadata';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { AppDataSource } from './data-source';
+import { AppDataSource } from './data/db/db.config';
 import { unwrapResolverError } from '@apollo/server/errors';
-import { resolvers } from './resolvers';
-import { ServerContext, typeDefs } from './schema';
+import { ServerContext } from './api/auth';
+import { schema } from './api';
 
 //Para lidar com Promises, definir a ordem usando o await
 export async function initialize() {
   await AppDataSource.initialize();
 
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
     formatError: (formattedError, error) => {
       const unwrapError = unwrapResolverError(error) as any;
 

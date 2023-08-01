@@ -1,7 +1,7 @@
 {
    "compilerOptions": {
-      "lib": ["es6"],
-      "target": "es2016",
+      "lib": ["es6", "esnext.asynciterable"],
+      "target": "es2018",
       "module": "commonjs",
       "moduleResolution": "node",
       "outDir": "./build",

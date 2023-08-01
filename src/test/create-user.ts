@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
-import { User } from '../entity/User';
+import { User } from '../data/entity/user';
 import { faker } from '@faker-js/faker';
-import { AppDataSource } from '../data-source';
-import { Address } from '../entity/Address';
+import { AppDataSource } from '../data/db/db.config';
+import { Address } from '../data/entity/address';
 
 export async function createUser(password?: string) {
   const hashedPassword = await bcrypt.hash(password ?? faker.internet.password(), 10);
