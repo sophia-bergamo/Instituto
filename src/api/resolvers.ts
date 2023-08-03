@@ -1,9 +1,9 @@
 import { verifyJWT } from './verify';
-import { loginUseCase } from '../domain/auth';
-import { userUseCase, usersUseCase, createUserUseCase } from '../domain/user';
+import { UserUseCase, UsersUseCase, CreateUserUseCase } from '../domain/user';
 import { ServerContext, LoginInput, Login } from './auth';
 import { UserInput, UsersInput, CreateUserInput, PaginatedUsers, UserModel } from './user';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { LoginUseCase } from '../domain/auth';
 
 @Resolver()
 export class UserResolver {
@@ -15,23 +15,27 @@ export class UserResolver {
   @Query(() => UserModel)
   async user(@Arg('input') input: UserInput, @Ctx() ctx: ServerContext) {
     await verifyJWT(ctx.token);
-    return userUseCase(input);
+    const classUser = new UserUseCase();
+    return classUser.exec(input);
   }
 
   @Query(() => PaginatedUsers)
   async users(@Arg('input') input: UsersInput, @Ctx() ctx: ServerContext) {
     await verifyJWT(ctx.token);
-    return usersUseCase(input);
+    const classUsers = new UsersUseCase();
+    return classUsers.exec(input);
   }
 
   @Mutation(() => UserModel)
   async createUser(@Arg('input') input: CreateUserInput, @Ctx() ctx: ServerContext) {
     await verifyJWT(ctx.token);
-    return createUserUseCase(input);
+    const classCreateUser = new CreateUserUseCase();
+    return classCreateUser.exec(input);
   }
 
   @Mutation(() => Login)
   async login(@Arg('input') input: LoginInput) {
-    return loginUseCase(input);
+    const classLogin = new LoginUseCase();
+    return classLogin.exec(input);
   }
 }

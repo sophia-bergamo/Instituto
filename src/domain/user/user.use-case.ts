@@ -1,8 +1,7 @@
-import { AppDataSource } from '../../data/db/db.config';
-import { User } from '../../data/entity/user';
+import { UsersDataSource } from '../../data/users/users.data-source';
 import { NotFoundError } from '../../test/error';
 
-interface UserInput {
+export interface UserInput {
   userId: number;
 }
 
@@ -25,13 +24,15 @@ interface AddressesModel {
   state: string;
 }
 
-export async function userUseCase(input: UserInput): Promise<UserModel> {
-  const user = await AppDataSource.manager.findOne(User, {
-    where: { id: input.userId },
-    relations: { addresses: true },
-  });
-  if (!user) {
-    throw new NotFoundError('Id Not found');
+export class UserUseCase {
+  public async exec(input: UserInput): Promise<UserModel> {
+    const userDs = new UsersDataSource();
+    const userId = await userDs.findUserById(input);
+
+    if (!userId) {
+      throw new NotFoundError('Id Not found');
+    }
+
+    return userId;
   }
-  return user;
 }
