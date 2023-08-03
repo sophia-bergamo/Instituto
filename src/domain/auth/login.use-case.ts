@@ -16,7 +16,7 @@ export interface LoginModel {
 }
 
 export class LoginUseCase {
-  public async exec(input: LoginInput): Promise<LoginModel> {
+  async exec(input: LoginInput): Promise<LoginModel> {
     const usersDs = new UsersDataSource();
     const user = await usersDs.findUserByEmail(input);
 

@@ -1,23 +1,55 @@
-import { LoginInput } from '../../domain/auth';
-import { CreateUserInput, UserInput, UserModel, UsersInput } from '../../domain/user';
 import { AppDataSource } from '../db/db.config';
 import { User } from '../entity/user';
 import * as bcrypt from 'bcrypt';
 
+interface LoginInput {
+  email: string;
+}
+
+interface UserInput {
+  userId: number;
+}
+
+interface CreateUserInput {
+  name: string;
+  email: string;
+  password: string;
+  birthDate: string;
+}
+
+interface UsersInput {
+  limit?: number;
+  skip?: number;
+}
+
+export interface UserModel {
+  addresses: AddressesModel[];
+  id: number;
+  name: string;
+  email: string;
+  birthDate: string;
+}
+
+interface AddressesModel {
+  id: number;
+  cep: string;
+  street: string;
+  streetNumber: number;
+  complement: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+}
+
 export class UsersDataSource {
-  async findUserByEmail(input: CreateUserInput | LoginInput): Promise<User | null> {
-    const user = await AppDataSource.manager.findOne(User, {
-      where: { email: input.email },
-    });
-    return user;
+  private readonly respository = AppDataSource.getRepository(User);
+
+  async findUserByEmail(input: LoginInput): Promise<User | null> {
+    return this.respository.findOne({ where: { email: input.email } });
   }
 
   async findUserById(input: UserInput): Promise<UserModel | null> {
-    const user = await AppDataSource.manager.findOne(User, {
-      where: { id: input.userId },
-      relations: { addresses: true },
-    });
-    return user;
+    return this.respository.findOne({ where: { id: input.userId }, relations: { addresses: true } });
   }
 
   async createUser(input: CreateUserInput): Promise<UserModel> {
@@ -33,12 +65,11 @@ export class UsersDataSource {
   }
 
   async usersAdresses(input: UsersInput): Promise<[User[], number]> {
-    const [users, totalOfUsers] = await AppDataSource.manager.findAndCount(User, {
+    return this.respository.findAndCount({
       order: { name: 'ASC' },
       relations: { addresses: true },
       take: input.limit ?? 10,
       skip: input.skip,
     });
-    return [users, totalOfUsers];
   }
 }
