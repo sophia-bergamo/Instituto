@@ -25,11 +25,8 @@ interface AddressesModel {
 }
 
 export class UserUseCase {
-  private readonly userDs: UsersDataSource;
+  constructor(private readonly userDs: UsersDataSource) {}
 
-  constructor() {
-    this.userDs = new UsersDataSource();
-  }
   public async exec(input: UserInput): Promise<UserModel> {
     const userId = await this.userDs.findUserById(input);
 

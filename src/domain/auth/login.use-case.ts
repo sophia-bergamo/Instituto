@@ -16,11 +16,8 @@ export interface LoginModel {
 }
 
 export class LoginUseCase {
-  private readonly usersDs: UsersDataSource;
+  constructor(private readonly usersDs: UsersDataSource) {}
 
-  constructor() {
-    this.usersDs = new UsersDataSource();
-  }
   public async exec(input: LoginInput): Promise<LoginModel> {
     const user = await this.usersDs.findUserByEmail(input);
 

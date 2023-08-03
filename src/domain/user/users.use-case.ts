@@ -16,11 +16,8 @@ export interface PaginatedUsers {
 }
 
 export class UsersUseCase {
-  private readonly usersDs: UsersDataSource;
+  constructor(private readonly usersDs: UsersDataSource) {}
 
-  constructor() {
-    this.usersDs = new UsersDataSource();
-  }
   public async exec(input: UsersInput): Promise<PaginatedUsers> {
     const defaultLimit = 10;
     const defautSkip = 0;

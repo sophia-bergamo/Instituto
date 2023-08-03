@@ -16,11 +16,8 @@ export interface CreateUserModel {
 }
 
 export class CreateUserUseCase {
-  private readonly usersDs: UsersDataSource;
+  constructor(private readonly usersDs: UsersDataSource) {}
 
-  constructor() {
-    this.usersDs = new UsersDataSource();
-  }
   public async exec(input: CreateUserInput): Promise<CreateUserModel> {
     const userEmail = await this.usersDs.findUserByEmail(input);
 

@@ -4,6 +4,7 @@ import { ServerContext, LoginInput, Login } from './auth';
 import { UserInput, UsersInput, CreateUserInput, PaginatedUsers, UserModel } from './user';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { LoginUseCase } from '../domain/auth';
+import { UsersDataSource } from '../data/users/users.data-source';
 
 @Resolver()
 export class UserResolver {
@@ -16,10 +17,10 @@ export class UserResolver {
   //readonly => pode ser acesso fora da classe mas altera seu valor
 
   constructor() {
-    this.userUseCase = new UserUseCase();
-    this.usersUseCase = new UsersUseCase();
-    this.loginUseCase = new LoginUseCase();
-    this.createUserCase = new CreateUserUseCase();
+    this.userUseCase = new UserUseCase(new UsersDataSource());
+    this.usersUseCase = new UsersUseCase(new UsersDataSource());
+    this.loginUseCase = new LoginUseCase(new UsersDataSource());
+    this.createUserCase = new CreateUserUseCase(new UsersDataSource());
   }
 
   @Query(() => String)
