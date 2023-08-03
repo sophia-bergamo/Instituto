@@ -16,6 +16,11 @@ export interface PaginatedUsers {
 }
 
 export class UsersUseCase {
+  private readonly usersDs: UsersDataSource;
+
+  constructor() {
+    this.usersDs = new UsersDataSource();
+  }
   public async exec(input: UsersInput): Promise<PaginatedUsers> {
     const defaultLimit = 10;
     const defautSkip = 0;
@@ -34,8 +39,7 @@ export class UsersUseCase {
       throw new InputError('Limit não pode ser zero');
     }
 
-    const usersDs = new UsersDataSource();
-    const [users, totalOfUsers] = await usersDs.usersAdresses(input);
+    const [users, totalOfUsers] = await this.usersDs.usersAdresses(input);
 
     const hasBefore = skip > 0;
     const hasAfter = skip + take < totalOfUsers;
