@@ -14,7 +14,7 @@ export class UserResolver {
   private readonly createUserCase: CreateUserUseCase;
 
   //private => só pode ser usada dentro da classe
-  //readonly => pode ser acesso fora da classe mas altera seu valor
+  //readonly => pode ser acesso fora da classe mas não altera seu valor "funciona como uma const"
 
   constructor() {
     this.userUseCase = new UserUseCase(new UsersDataSource());
