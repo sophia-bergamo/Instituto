@@ -1,5 +1,6 @@
 import { UsersDataSource } from '../../data/users/users.data-source';
 import { NotFoundError } from '../../test/error';
+import { Service } from 'typedi';
 
 export interface UserInput {
   userId: number;
@@ -24,6 +25,7 @@ interface AddressesModel {
   state: string;
 }
 
+@Service()
 export class UserUseCase {
   constructor(private readonly userDataSource: UsersDataSource) {}
 

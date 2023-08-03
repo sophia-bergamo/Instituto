@@ -4,24 +4,17 @@ import { ServerContext, LoginInput, Login } from './auth';
 import { UserInput, UsersInput, CreateUserInput, PaginatedUsers, UserModel } from './user';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { LoginUseCase } from '../domain/auth';
-import { UsersDataSource } from '../data/users/users.data-source';
+import { Service } from 'typedi';
 
+@Service()
 @Resolver()
 export class UserResolver {
-  private readonly userUseCase: UserUseCase;
-  private readonly usersUseCase: UsersUseCase;
-  private readonly loginUseCase: LoginUseCase;
-  private readonly createUserCase: CreateUserUseCase;
-
-  //private => só pode ser usada dentro da classe
-  //readonly => pode ser acesso fora da classe mas não altera seu valor "funciona como uma const"
-
-  constructor() {
-    this.userUseCase = new UserUseCase(new UsersDataSource());
-    this.usersUseCase = new UsersUseCase(new UsersDataSource());
-    this.loginUseCase = new LoginUseCase(new UsersDataSource());
-    this.createUserCase = new CreateUserUseCase(new UsersDataSource());
-  }
+  constructor(
+    private readonly userUseCase: UserUseCase,
+    private readonly usersUseCase: UsersUseCase,
+    private readonly loginUseCase: LoginUseCase,
+    private readonly createUserCase: CreateUserUseCase,
+  ) {}
 
   @Query(() => String)
   hello(): string {

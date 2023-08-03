@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import Jwt from 'jsonwebtoken';
 import { UserModel } from '../user';
 import { UsersDataSource } from '../../data/users/users.data-source';
+import { Service } from 'typedi';
 
 export interface LoginInput {
   email: string;
@@ -15,6 +16,7 @@ export interface LoginModel {
   user: UserModel;
 }
 
+@Service()
 export class LoginUseCase {
   constructor(private readonly userDataSource: UsersDataSource) {}
 
