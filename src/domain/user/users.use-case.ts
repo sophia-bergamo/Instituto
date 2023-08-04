@@ -1,6 +1,6 @@
 import { UserModel } from '.';
 import { UsersDataSource } from '../../data/users/users.data-source';
-
+import { Service } from 'typedi';
 import { InputError } from '../../test/error';
 
 export interface UsersInput {
@@ -15,6 +15,7 @@ export interface PaginatedUsers {
   users: UserModel[];
 }
 
+@Service()
 export class UsersUseCase {
   constructor(private readonly userDataSource: UsersDataSource) {}
 

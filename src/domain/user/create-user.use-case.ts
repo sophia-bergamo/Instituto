@@ -1,5 +1,6 @@
 import { UsersDataSource } from '../../data/users/users.data-source';
 import { InputError } from '../../test/error';
+import { Service } from 'typedi';
 
 export interface CreateUserInput {
   name: string;
@@ -15,6 +16,7 @@ export interface CreateUserModel {
   birthDate: string;
 }
 
+@Service()
 export class CreateUserUseCase {
   constructor(private readonly userDataSource: UsersDataSource) {}
 

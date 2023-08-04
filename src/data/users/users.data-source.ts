@@ -1,6 +1,7 @@
 import { AppDataSource } from '../db/db.config';
 import { User } from '../entity/user';
 import * as bcrypt from 'bcrypt';
+import { Service } from 'typedi';
 
 interface LoginInput {
   email: string;
@@ -41,6 +42,7 @@ interface AddressesModel {
   state: string;
 }
 
+@Service()
 export class UsersDataSource {
   private readonly respository = AppDataSource.getRepository(User);
 
