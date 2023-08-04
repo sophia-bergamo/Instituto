@@ -16,9 +16,10 @@ export interface LoginModel {
 }
 
 export class LoginUseCase {
+  constructor(private readonly userDataSource: UsersDataSource) {}
+
   async exec(input: LoginInput): Promise<LoginModel> {
-    const usersDs = new UsersDataSource();
-    const user = await usersDs.findUserByEmail(input);
+    const user = await this.userDataSource.findUserByEmail(input);
 
     if (!user) {
       throw new UnauthorizedError('Credenciais inválidas');

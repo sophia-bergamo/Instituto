@@ -25,9 +25,10 @@ interface AddressesModel {
 }
 
 export class UserUseCase {
-  public async exec(input: UserInput): Promise<UserModel> {
-    const userDs = new UsersDataSource();
-    const userId = await userDs.findUserById(input);
+  constructor(private readonly userDataSource: UsersDataSource) {}
+
+  async exec(input: UserInput): Promise<UserModel> {
+    const userId = await this.userDataSource.findUserById(input);
 
     if (!userId) {
       throw new NotFoundError('Id Not found');

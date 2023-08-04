@@ -16,9 +16,10 @@ export interface CreateUserModel {
 }
 
 export class CreateUserUseCase {
-  public async exec(input: CreateUserInput): Promise<CreateUserModel> {
-    const usersDs = new UsersDataSource();
-    const userEmail = await usersDs.findUserByEmail(input);
+  constructor(private readonly userDataSource: UsersDataSource) {}
+
+  async exec(input: CreateUserInput): Promise<CreateUserModel> {
+    const userEmail = await this.userDataSource.findUserByEmail(input);
 
     if (userEmail) {
       throw new InputError('Email já registrado');
